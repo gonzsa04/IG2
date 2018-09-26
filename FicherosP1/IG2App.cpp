@@ -4,7 +4,6 @@
 #include <OgreInput.h>
 #include <SDL_keycode.h>
 #include <OgreMeshManager.h>
-#include "Toy.h"
 
 using namespace Ogre;
 
@@ -14,9 +13,17 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
   {
     getRoot()->queueEndRendering();
   }
+  else if (evt.keysym.sym == SDLK_p)
+  {
+	  giroPlano();
+  }
   //else if (evt.keysym.sym == SDLK_???)
   
   return true;
+}
+
+void IG2App::giroPlano() {
+	mPlano->pitch(Ogre::Radian(0.3));
 }
 
 void IG2App::shutdown()
@@ -91,14 +98,17 @@ void IG2App::setupScene(void)
   //------------------------------------------------------------------------
 
   MeshManager::getSingleton().createPlane("Plano", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	  Plane(Vector3::UNIT_Y, 0), 1080, 800, 100, 80, true, 1, 1.0, 1.0, Vector3::UNIT_Z);
+	  Plane(Vector3::UNIT_Y, 0), 1080, 800, 100, 80, true, 1, 1.0, 1.0, -Vector3::UNIT_Z);
+
   Ogre::Entity* plano = mSM->createEntity("Plano");
+  plano->setMaterialName("Plano");
 
   mPlano = mSM->getRootSceneNode()->createChildSceneNode("nPlano");
   mPlano->attachObject(plano);
 
   mToy = mPlano->createChildSceneNode("nToy");
-  Toy toy(mToy);
+  toy = new Toy(mToy);
+  addInputListener(toy);
 
   // finally something to render
 

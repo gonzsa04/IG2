@@ -6,6 +6,7 @@
 #include <OgreSceneNode.h>
 #include <OgreTrays.h>
 #include <OgreCameraMan.h>
+#include "Toy.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ protected:
   virtual void setup();
   virtual void shutdown();
   virtual void setupScene();
+  void giroPlano();
 
   virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);  // InputListener
       
@@ -31,7 +33,7 @@ protected:
   Ogre::SceneNode* mToy = nullptr;
   Ogre::SceneNode* mSinbadNode = nullptr;
   OgreBites::CameraMan* mCamMgr = nullptr;
- 
+  Toy* toy = nullptr;
 };
 
 #endif
