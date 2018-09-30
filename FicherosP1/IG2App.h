@@ -25,8 +25,10 @@ protected:
 
   virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);  // InputListener
       
-  Ogre::SceneManager* mSM = nullptr;
-  OgreBites::TrayManager* mTrayMgr = nullptr;    
+  Ogre::SceneManager* mSM = nullptr;               //nodo del gestor de la escena
+  OgreBites::TrayManager* mTrayMgr = nullptr;
+
+  //nodos de los elementos de la escena
   Ogre::SceneNode* mLightNode = nullptr;
   Ogre::SceneNode* mCamNode = nullptr;
   Ogre::SceneNode* mPlano = nullptr;

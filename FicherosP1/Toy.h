@@ -10,29 +10,35 @@
 class Toy: public OgreBites::InputListener
 {
 private:
-	Ogre::SceneNode* sceneNode_;
+	Ogre::SceneNode* sceneNode_;         //nodo de la escena que apuntara a toy
+
+	//partes del cuerpo (entidades)
 	Ogre::Entity* cabeza;
 	Ogre::Entity* nariz;
 	Ogre::Entity* cuerpo;
 	Ogre::Entity* ombligo;
+
+	//nodos que apuntan a esas partes del cuerpo (habra una jerarquia entre ellos)
 	Ogre::SceneNode* mCuello;
 	Ogre::SceneNode* mCabeza;
 	Ogre::SceneNode* mNariz;
 	Ogre::SceneNode* mCuerpo;
 	Ogre::SceneNode* mOmbligo;
+
 	bool parado = true;
 public:
 	Toy(Ogre::SceneNode* sceneNode): sceneNode_(sceneNode) {
 		//creacion de entidades
-		cabeza = sceneNode->getCreator()->createEntity("sphere.mesh");
-		nariz = sceneNode->getCreator()->createEntity("sphere.mesh");
+		//Accedemos al creador del nodo recibido, que sera mSM, y le decimos que use la malla de esfera
+		cabeza = sceneNode->getCreator()->createEntity("sphere.mesh");  //si no se encuentra una malla, se busca en media/models
+		nariz = sceneNode->getCreator()->createEntity("sphere.mesh");   //y se copia en media/IG2App para que pueda ser encontrada
 		cuerpo = sceneNode->getCreator()->createEntity("sphere.mesh");
 		ombligo = sceneNode->getCreator()->createEntity("sphere.mesh");
 
 		//jerarquia de los nodos
-		mCuello = sceneNode->createChildSceneNode("nCuello");
-		mCabeza = mCuello->createChildSceneNode("nCabeza");
-		mCabeza->attachObject(cabeza);
+		mCuello = sceneNode->createChildSceneNode("nCuello");     //el cuello sera el hijo directo del nodo recibido y el padre de los demas
+		mCabeza = mCuello->createChildSceneNode("nCabeza");       //la cabeza y el cuerpo seran hijos del cuello, y a su vez la nariz sera hijo
+		mCabeza->attachObject(cabeza);                            //de la cabeza y el ombligo hijo del cuerpo
 		mNariz = mCabeza->createChildSceneNode("nNariz");
 		mNariz->attachObject(nariz);
 		mCuerpo = mCuello->createChildSceneNode("nCuerpo");
@@ -40,7 +46,7 @@ public:
 		mOmbligo = mCuerpo->createChildSceneNode("nOmbligo");
 		mOmbligo->attachObject(ombligo);
 
-		//posicionamiento y escalado relativos
+		//posicionamiento y escalado relativos (cada uno respecto a su padre)
 		mNariz->setPosition(100, 15, 0);
 		mNariz->setScale(0.175, 0.175, 0.175);
 		mCabeza->setPosition(0, 140, 0);
@@ -51,27 +57,30 @@ public:
 		mOmbligo->setScale(0.175, 0.175, 0.175);
 	}
 
+	//metodo heredado de InputListener
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt) {
-		if (evt.keysym.sym == SDLK_t) {
+		if (evt.keysym.sym == SDLK_t) {        //si pulsamos t se mueve discretamente
 			movimiento();
 		}
-		else if (evt.keysym.sym == SDLK_y) {
+		else if (evt.keysym.sym == SDLK_y) {   //si pulsamos y toy se para/anda
 			parado = !parado;
 		}
-		else if (evt.keysym.sym == SDLK_v) {
+		else if (evt.keysym.sym == SDLK_v) {   //si pulsamos v toy gira 45 grados
 			Giro45();
 		}
 		return true;
 	}
 
+	//metodo heredado de InputListener
+	//si toy no esta parado, se mueve de forma continua utilizando el t desde el ultimo frame
 	virtual void frameRendered(const Ogre::FrameEvent & evt) {
 		if (!parado) movimiento(evt.timeSinceLastFrame * 10);
 	}
 
 	void movimiento(float vel = 1) {
-		mCabeza->yaw(Ogre::Radian(0.3*vel));
-		mCuerpo->roll(Ogre::Radian(-0.3*vel));
-		mCuello->translate(2*vel, 0, 0, Ogre::Node::TS_LOCAL);
+		mCabeza->yaw(Ogre::Radian(0.3*vel));                    //la cabeza gira en el eje y
+		mCuerpo->roll(Ogre::Radian(-0.3*vel));                  //el cuerpo gira en el eje z (en la direccion que se mueve toy)
+		mCuello->translate(2*vel, 0, 0, Ogre::Node::TS_LOCAL);  //trasladamos toy entero en x (LOCAL para que se actualice de si mismo y no de su padre)
 	}
 
 	void Giro45() {
