@@ -6,12 +6,11 @@
 #include "OgreMeshManager.h"
 #include "OgreInput.h" 
 #include "SDL_keycode.h"
+#include "GameObject.h"
 
-class Toy: public OgreBites::InputListener
+class Toy: public OgreBites::InputListener, GameObject
 {
 private:
-	Ogre::SceneNode* sceneNode_;         //nodo de la escena que apuntara a toy
-
 	//partes del cuerpo (entidades)
 	Ogre::Entity* cabeza;
 	Ogre::Entity* nariz;
@@ -27,13 +26,13 @@ private:
 
 	bool parado = true;
 public:
-	Toy(Ogre::SceneNode* sceneNode): sceneNode_(sceneNode) {
+	Toy(Ogre::SceneNode* sceneNode, std::string mesh) {
 		//creacion de entidades
 		//Accedemos al creador del nodo recibido, que sera mSM, y le decimos que use la malla de esfera
-		cabeza = sceneNode->getCreator()->createEntity("sphere.mesh");  //si no se encuentra una malla, se busca en media/models
-		nariz = sceneNode->getCreator()->createEntity("sphere.mesh");   //y se copia en media/IG2App para que pueda ser encontrada
-		cuerpo = sceneNode->getCreator()->createEntity("sphere.mesh");
-		ombligo = sceneNode->getCreator()->createEntity("sphere.mesh");
+		cabeza = sceneNode->getCreator()->createEntity(mesh);  //si no se encuentra una malla, se busca en media/models
+		nariz = sceneNode->getCreator()->createEntity(mesh);   //y se copia en media/IG2App para que pueda ser encontrada
+		cuerpo = sceneNode->getCreator()->createEntity(mesh);
+		ombligo = sceneNode->getCreator()->createEntity(mesh);
 
 		//jerarquia de los nodos
 		mCuello = sceneNode->createChildSceneNode("nCuello");     //el cuello sera el hijo directo del nodo recibido y el padre de los demas
@@ -87,6 +86,16 @@ public:
 		mCuello->rotate(Ogre::Vector3(0,1,0), Ogre::Degree(45));
 	}
 
-	~Toy() {}
+	virtual ~Toy() {
+		delete cabeza; cabeza = nullptr;
+		delete nariz; nariz = nullptr;
+		delete cuerpo; cuerpo = nullptr;
+		delete ombligo; ombligo = nullptr;
+		delete mCuello; mCuello = nullptr;
+		delete mCabeza; mCabeza = nullptr;
+		delete mNariz; mNariz = nullptr;
+		delete mCuerpo; mCuerpo = nullptr;
+		delete mOmbligo; mOmbligo = nullptr;
+	}
 };
 

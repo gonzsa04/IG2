@@ -7,6 +7,7 @@
 #include <OgreTrays.h>
 #include <OgreCameraMan.h>
 #include "Toy.h"
+#include "Sinbad.h"
 
 using namespace std;
 
@@ -36,6 +37,7 @@ protected:
   Ogre::SceneNode* mSinbadNode = nullptr;
   OgreBites::CameraMan* mCamMgr = nullptr;
   Toy* toy = nullptr;
+  Sinbad* sinbad = nullptr;
 };
 
 #endif

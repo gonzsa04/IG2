@@ -103,6 +103,7 @@ void IG2App::setupScene(void)
 
   Ogre::Entity* plano = mSM->createEntity("Plano");  //creamos una entidad con la malla de nombre "Plano" antes creada
   plano->setMaterialName("Plano");                   //añadimos el material con ese nombre
+
   /*Definir en un archivo de texto ("IG2App.material") un material de nombre "nombre" con
 	una unidad de textura para la imagen 1d_debug.png (mejor cambiar el nombre) y coeficientes de
 	reflexión (0.5, 0.5, 0.5). El archivo debe estar en media\IG2App, junto con los archivos de las imágenes que utilice 
@@ -114,18 +115,16 @@ void IG2App::setupScene(void)
   //---------------------------------TOY------------------------------------
 
   mToy = mPlano->createChildSceneNode("nToy");                      //hacemos que el nodo mToy sea hijo del nodo mPlano
-  toy = new Toy(mToy);                                              //inicializamos la entidad toy, a la que apuntara mToy
+  toy = new Toy(mToy, "sphere.mesh");                                              //inicializamos la entidad toy, a la que apuntara mToy
   addInputListener(toy);                                            //añadimos toy a la lista de oyentes para poder recibir eventos de teclado
 
   //-------------------------------SINBAD-----------------------------------
 
-  Ogre::Entity* ent = mSM->createEntity("Sinbad.mesh");             //inicializamos la entidad ent con la malla indicada
-
   mSinbadNode = mPlano->createChildSceneNode("nSinbad");            //hacemos que el nodo mSinbadNode sea hijo del nodo mPlano
-  mSinbadNode->attachObject(ent);                                   //hacemos que el nodo mSinbadNode apunte a la entidad ent
+  sinbad = new Sinbad(mSinbadNode, "Sinbad.mesh");
 
-  mSinbadNode->setPosition(400, 100, -300);                         //cambiamos posicion y escala del nodo mSinbadNode respecto a su padre,
-  mSinbadNode->setScale(20, 20, 20);                                //el nodo mPlano
+  sinbad->setPosition(400, 100, -300);                         //cambiamos posicion y escala del nodo mSinbadNode respecto a su padre,
+  sinbad->setScale(20, 20, 20);                                //el nodo mPlano
   //mSinbadNode->yaw(Ogre::Degree(-45));
   //mSinbadNode->showBoundingBox(true);
   //mSinbadNode->setVisible(false);
