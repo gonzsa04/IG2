@@ -1,9 +1,4 @@
 #pragma once
-
-#include "OgreSceneManager.h"
-#include "OgreSceneNode.h"
-#include "OgreEntity.h"
-#include "OgreMeshManager.h"
 #include "OgreInput.h" 
 #include "SDL_keycode.h"
 #include "GameObject.h"
@@ -86,16 +81,6 @@ public:
 		mCuello->rotate(Ogre::Vector3(0,1,0), Ogre::Degree(45));
 	}
 
-	virtual ~Toy() {
-		delete cabeza; cabeza = nullptr;
-		delete nariz; nariz = nullptr;
-		delete cuerpo; cuerpo = nullptr;
-		delete ombligo; ombligo = nullptr;
-		delete mCuello; mCuello = nullptr;
-		delete mCabeza; mCabeza = nullptr;
-		delete mNariz; mNariz = nullptr;
-		delete mCuerpo; mCuerpo = nullptr;
-		delete mOmbligo; mOmbligo = nullptr;
-	}
+	virtual ~Toy() {}
 };
 

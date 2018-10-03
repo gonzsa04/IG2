@@ -74,10 +74,25 @@ void IG2App::setupScene(void)
   mCamNode->setPosition(0, 0, 1000);
   mCamNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
   //mCamNode->setDirection(Ogre::Vector3(0, 0, -1));  
-  
+
   // and tell it to render into the main window
   Viewport* vp = getRenderWindow()->addViewport(cam);
   //vp->setBackgroundColour(Ogre::ColourValue(1, 1, 1));
+  
+  //----------------------------------CAMARAREF--------------------------------
+
+  Camera* camRef = mSM->createCamera("CamRef");
+  camRef->setNearClipDistance(1);
+  camRef->setFarClipDistance(10000);
+  camRef->setAutoAspectRatio(true);
+  //cam->setPolygonMode(Ogre::PM_WIREFRAME); 
+
+  mCamRefNode = mSM->getRootSceneNode()->createChildSceneNode("nCamRef");
+  mCamRefNode->attachObject(camRef);
+
+  mCamRefNode->setPosition(0, 0, 1000);
+  mCamRefNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
+  //mCamNode->setDirection(Ogre::Vector3(0, 0, -1)); 
 
   //-----------------------------------LUCES---------------------------------
 
@@ -96,21 +111,14 @@ void IG2App::setupScene(void)
  
   //---------------------------------PLANO----------------------------------
 
-  //el gestor de mallas tiene una unica instancia en toda la app (singleton)
-  //De el utilizamos el metodo para crear una malla de un plano con nombre "Plano"
-  MeshManager::getSingleton().createPlane("Plano", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	  Plane(Vector3::UNIT_Y, 0), 1080, 800, 100, 80, true, 1, 1.0, 1.0, -Vector3::UNIT_Z);
-
-  Ogre::Entity* plano = mSM->createEntity("Plano");  //creamos una entidad con la malla de nombre "Plano" antes creada
-  plano->setMaterialName("Plano");                   //añadimos el material con ese nombre
+  mPlano = mSM->getRootSceneNode()->createChildSceneNode("nPlano"); //hacemos que el nodo mPlano sea hijo del nodo raiz
+  plano = new Plano(mPlano, "Plano", camRef);
+  plano->setMaterial("Plano");
 
   /*Definir en un archivo de texto ("IG2App.material") un material de nombre "nombre" con
 	una unidad de textura para la imagen 1d_debug.png (mejor cambiar el nombre) y coeficientes de
 	reflexión (0.5, 0.5, 0.5). El archivo debe estar en media\IG2App, junto con los archivos de las imágenes que utilice 
 	(copiarlas de media\materials\textures). Añadir scroll_anim 0.1 0.0 para que se mueva horizontalmente*/
-
-  mPlano = mSM->getRootSceneNode()->createChildSceneNode("nPlano"); //hacemos que el nodo mPlano sea hijo del nodo raiz
-  mPlano->attachObject(plano);                                      //hacemos que el nodo mPlano apunte a la entidad plano
 
   //---------------------------------TOY------------------------------------
 

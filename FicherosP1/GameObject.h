@@ -8,7 +8,7 @@
 
 class GameObject
 {
-private:
+protected:
 	Ogre::SceneNode* sceneNode_;         //nodo de la escena que apuntara a GameObject
 public:
 	GameObject() {}
@@ -26,8 +26,5 @@ public:
 		sceneNode_->setScale(x, y, z);
 	}
 
-	~GameObject() {
-		delete sceneNode_;
-		sceneNode_ = nullptr;
-	}
+	~GameObject() {}
 };

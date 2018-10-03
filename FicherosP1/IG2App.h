@@ -8,6 +8,7 @@
 #include <OgreCameraMan.h>
 #include "Toy.h"
 #include "Sinbad.h"
+#include "Plano.h"
 
 using namespace std;
 
@@ -32,12 +33,14 @@ protected:
   //nodos de los elementos de la escena
   Ogre::SceneNode* mLightNode = nullptr;
   Ogre::SceneNode* mCamNode = nullptr;
+  Ogre::SceneNode* mCamRefNode = nullptr;
   Ogre::SceneNode* mPlano = nullptr;
   Ogre::SceneNode* mToy = nullptr;
   Ogre::SceneNode* mSinbadNode = nullptr;
   OgreBites::CameraMan* mCamMgr = nullptr;
   Toy* toy = nullptr;
   Sinbad* sinbad = nullptr;
+  Plano* plano = nullptr;
 };
 
 #endif
