@@ -81,7 +81,7 @@ void IG2App::setupScene(void)
   
   //----------------------------------CAMARAREF--------------------------------
 
-  Camera* camRef = mSM->createCamera("CamRef");
+  Camera* camRef = mSM->createCamera("CamRef");     // camara para hacer el reflejo
   camRef->setNearClipDistance(1);
   camRef->setFarClipDistance(10000);
   camRef->setAutoAspectRatio(true);
@@ -111,9 +111,9 @@ void IG2App::setupScene(void)
  
   //---------------------------------PLANO----------------------------------
 
-  mPlano = mSM->getRootSceneNode()->createChildSceneNode("nPlano"); //hacemos que el nodo mPlano sea hijo del nodo raiz
-  plano = new Plano(mPlano, "Plano", camRef);
-  plano->setMaterial("Plano");
+  mPlano = mSM->getRootSceneNode()->createChildSceneNode("nPlano"); // hacemos que el nodo mPlano sea hijo del nodo raiz
+  plano = new Plano(mPlano, "Plano", camRef);                       // creamos el plano, que por debajo se adjuntara al nodo mPlano
+  plano->setMaterial("Plano");                                      // le añadimos material
 
   /*Definir en un archivo de texto ("IG2App.material") un material de nombre "nombre" con
 	una unidad de textura para la imagen 1d_debug.png (mejor cambiar el nombre) y coeficientes de
@@ -122,17 +122,17 @@ void IG2App::setupScene(void)
 
   //---------------------------------TOY------------------------------------
 
-  mToy = mPlano->createChildSceneNode("nToy");                      //hacemos que el nodo mToy sea hijo del nodo mPlano
-  toy = new Toy(mToy, "sphere.mesh");                                              //inicializamos la entidad toy, a la que apuntara mToy
-  addInputListener(toy);                                            //añadimos toy a la lista de oyentes para poder recibir eventos de teclado
+  mToy = mPlano->createChildSceneNode("nToy");                      // hacemos que el nodo mToy sea hijo del nodo mPlano
+  toy = new Toy(mToy, "sphere.mesh");                               // inicializamos la entidad toy, a la que apuntara mToy
+  addInputListener(toy);                                            // añadimos toy a la lista de oyentes para poder recibir eventos de teclado
 
   //-------------------------------SINBAD-----------------------------------
 
-  mSinbadNode = mPlano->createChildSceneNode("nSinbad");            //hacemos que el nodo mSinbadNode sea hijo del nodo mPlano
-  sinbad = new Sinbad(mSinbadNode, "Sinbad.mesh");
+  mSinbadNode = mPlano->createChildSceneNode("nSinbad");            // hacemos que el nodo mSinbadNode sea hijo del nodo mPlano
+  sinbad = new Sinbad(mSinbadNode, "Sinbad.mesh");                  // creamos a Sinbad, que por debajo se adjuntara al nodo mSinbadNode
 
-  sinbad->setPosition(400, 100, -300);                         //cambiamos posicion y escala del nodo mSinbadNode respecto a su padre,
-  sinbad->setScale(20, 20, 20);                                //el nodo mPlano
+  sinbad->setPosition(400, 100, -300);                              // cambiamos posicion y escala del nodo mSinbadNode respecto a su padre,
+  sinbad->setScale(20, 20, 20);                                     // el nodo mPlano
   //mSinbadNode->yaw(Ogre::Degree(-45));
   //mSinbadNode->showBoundingBox(true);
   //mSinbadNode->setVisible(false);
