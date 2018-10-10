@@ -87,12 +87,7 @@ void IG2App::setupScene(void)
   camRef->setAutoAspectRatio(true);
   //cam->setPolygonMode(Ogre::PM_WIREFRAME); 
 
-  mCamRefNode = mSM->getRootSceneNode()->createChildSceneNode("nCamRef");
-  mCamRefNode->attachObject(camRef);
-
-  mCamRefNode->setPosition(0, 0, 1000);
-  mCamRefNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
-  //mCamNode->setDirection(Ogre::Vector3(0, 0, -1)); 
+  mCamNode->attachObject(camRef);
 
   //-----------------------------------LUCES---------------------------------
 
@@ -113,7 +108,6 @@ void IG2App::setupScene(void)
 
   mPlano = mSM->getRootSceneNode()->createChildSceneNode("nPlano"); // hacemos que el nodo mPlano sea hijo del nodo raiz
   plano = new Plano(mPlano, "Plano", camRef);                       // creamos el plano, que por debajo se adjuntara al nodo mPlano
-  plano->setMaterial("Plano");                                      // le añadimos material
 
   /*Definir en un archivo de texto ("IG2App.material") un material de nombre "nombre" con
 	una unidad de textura para la imagen 1d_debug.png (mejor cambiar el nombre) y coeficientes de
@@ -130,9 +124,11 @@ void IG2App::setupScene(void)
 
   mSinbadNode = mPlano->createChildSceneNode("nSinbad");            // hacemos que el nodo mSinbadNode sea hijo del nodo mPlano
   sinbad = new Sinbad(mSinbadNode, "Sinbad.mesh");                  // creamos a Sinbad, que por debajo se adjuntara al nodo mSinbadNode
+  addInputListener(sinbad);
 
   sinbad->setPosition(400, 100, -300);                              // cambiamos posicion y escala del nodo mSinbadNode respecto a su padre,
   sinbad->setScale(20, 20, 20);                                     // el nodo mPlano
+  sinbad->setAnimation("Dance");
   //mSinbadNode->yaw(Ogre::Degree(-45));
   //mSinbadNode->showBoundingBox(true);
   //mSinbadNode->setVisible(false);

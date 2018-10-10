@@ -33,7 +33,6 @@ protected:
   //nodos de los elementos de la escena
   Ogre::SceneNode* mLightNode = nullptr;
   Ogre::SceneNode* mCamNode = nullptr;
-  Ogre::SceneNode* mCamRefNode = nullptr;
   Ogre::SceneNode* mPlano = nullptr;
   Ogre::SceneNode* mToy = nullptr;
   Ogre::SceneNode* mSinbadNode = nullptr;

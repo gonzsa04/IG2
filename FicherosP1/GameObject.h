@@ -10,11 +10,12 @@ class GameObject                          // clase abstracta raíz de los objetos
 {
 protected:
 	Ogre::SceneNode* sceneNode_;          // nodo de la escena que apuntara a GameObject
+	Ogre::Entity* ent;
 public:
 	GameObject() {}
 
 	GameObject(Ogre::SceneNode* sceneNode, std::string mesh) : sceneNode_(sceneNode) {
-		Ogre::Entity* ent = sceneNode_->getCreator()->createEntity(mesh);             //inicializamos la entidad ent con la malla indicada
+		ent = sceneNode_->getCreator()->createEntity(mesh);             //inicializamos la entidad ent con la malla indicada
 		sceneNode_->attachObject(ent);												  //hacemos que el nodo sceneNode apunte a la entidad ent
 	}
 

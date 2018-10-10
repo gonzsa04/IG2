@@ -3,7 +3,7 @@
 #include "SDL_keycode.h"
 #include "GameObject.h"
 
-class Toy: public OgreBites::InputListener, GameObject
+class Toy: public OgreBites::InputListener, public GameObject
 {
 private:
 	//partes del cuerpo (entidades)
