@@ -28,7 +28,7 @@ public:
 	void setMaterial(string name) { plano->setMaterialName(name); }
 
 	virtual void preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
-		// lt l l ( // ocultar el panel (l tid d) la entidad) y poner l bi t uz ambiente
+
 	virtual void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
 
 	virtual ~Plano();

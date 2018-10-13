@@ -12,7 +12,12 @@ Plano::Plano(Ogre::SceneNode* sceneNode, string name, Camera* camRef, Vector3 u,
 
 	plano = sceneNode_->getCreator()->createEntity(name);  // creamos entidad plano con esa malla
 	sceneNode_->attachObject(plano);                       // lo adjuntamos al nodo
-	setMaterial(matName);
+	setMaterial(matName);                                  // agregamos el material
+
+  /*Definir en un archivo de texto ("IG2App.material") un material de nombre "nombre" con
+	una unidad de textura para la imagen 1d_debug.png (mejor cambiar el nombre) y coeficientes de
+	reflexión (0.5, 0.5, 0.5). El archivo debe estar en media\IG2App, junto con los archivos de las imágenes que utilice
+	(copiarlas de media\materials\textures). Añadir scroll_anim 0.1 0.0 para que se mueva horizontalmente*/
 
 	mp = new MovablePlane(u, f);                           // creamos el panel
 	sceneNode_->attachObject(mp);                          // lo adjuntamos al nodo
@@ -28,11 +33,11 @@ Plano::Plano(Ogre::SceneNode* sceneNode, string name, Camera* camRef, Vector3 u,
 	RenderTexture* renderTexture = rttTex->getBuffer()->getRenderTarget();
 	Viewport * vpt = renderTexture->addViewport(camRef);
 	vpt->setClearEveryFrame(true);
-	vpt->setBackgroundColour(ColourValue::White);
+	vpt->setBackgroundColour(ColourValue::White);           // color de fondo blanco (asi el reflejo se vera oscuro)
 
 	// añadimos la nueva unidad de textura al material del panel
 	TextureUnitState* tu = plano->getSubEntities()[0]->getMaterial()->getTechniques()[0]->getPasses()[0]->createTextureUnitState("texRtt");
-	tu->setColourOperation(LBO_MODULATE); // backgroundColour -> black
+	tu->setColourOperation(LBO_MODULATE);                   // multiplicamos->el reflejo tendera a ser mas oscuro
 	// LBO_ADD / LBO_ALPHA_BLEND / LBO_REPLACE
 	tu->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
 	tu->setProjectiveTexturing(true, camRef);
@@ -40,13 +45,15 @@ Plano::Plano(Ogre::SceneNode* sceneNode, string name, Camera* camRef, Vector3 u,
 	renderTexture->addListener(this);
 }
 
+// nos avisa antes del renderizado
 void Plano::preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt) {
-	plano->setVisible(false);
+	plano->setVisible(false);                               // oculta el panel (la entidad) y pone luz ambiente
 	sceneNode_->getCreator()->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
 }
-// lt l l ( // ocultar el panel (l tid d) la entidad) y poner l bi t uz ambiente
+
+// nos avisa despues del renderizado
 void Plano::postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt) {
-	plano->setVisible(true);
+	plano->setVisible(true);                                // restablece los cambios
 	sceneNode_->getCreator()->setAmbientLight(ColourValue(0, 0, 0));
 }
 

@@ -82,10 +82,9 @@ void IG2App::setupScene(void)
   //----------------------------------CAMARAREF--------------------------------
 
   Camera* camRef = mSM->createCamera("CamRef");     // camara para hacer el reflejo
-  camRef->setNearClipDistance(1);
-  camRef->setFarClipDistance(10000);
+  camRef->setNearClipDistance(1);                   // mismo frustum y mismo nodo que la camara principal
+  camRef->setFarClipDistance(10000);                // asi actualiza su posicion en funcion de como movamos la principal
   camRef->setAutoAspectRatio(true);
-  //cam->setPolygonMode(Ogre::PM_WIREFRAME); 
 
   mCamNode->attachObject(camRef);
 
@@ -109,11 +108,6 @@ void IG2App::setupScene(void)
   mPlano = mSM->getRootSceneNode()->createChildSceneNode("nPlano"); // hacemos que el nodo mPlano sea hijo del nodo raiz
   plano = new Plano(mPlano, "Plano", camRef);                       // creamos el plano, que por debajo se adjuntara al nodo mPlano
 
-  /*Definir en un archivo de texto ("IG2App.material") un material de nombre "nombre" con
-	una unidad de textura para la imagen 1d_debug.png (mejor cambiar el nombre) y coeficientes de
-	reflexión (0.5, 0.5, 0.5). El archivo debe estar en media\IG2App, junto con los archivos de las imágenes que utilice 
-	(copiarlas de media\materials\textures). Añadir scroll_anim 0.1 0.0 para que se mueva horizontalmente*/
-
   //---------------------------------TOY------------------------------------
 
   mToy = mPlano->createChildSceneNode("nToy");                      // hacemos que el nodo mToy sea hijo del nodo mPlano
@@ -124,11 +118,11 @@ void IG2App::setupScene(void)
 
   mSinbadNode = mPlano->createChildSceneNode("nSinbad");            // hacemos que el nodo mSinbadNode sea hijo del nodo mPlano
   sinbad = new Sinbad(mSinbadNode, "Sinbad.mesh");                  // creamos a Sinbad, que por debajo se adjuntara al nodo mSinbadNode
-  addInputListener(sinbad);
+  addInputListener(sinbad);                                         // añadimos Sinbad a la lista de oyentes para poder recibir eventos de teclado
 
   sinbad->setPosition(400, 100, -300);                              // cambiamos posicion y escala del nodo mSinbadNode respecto a su padre,
   sinbad->setScale(20, 20, 20);                                     // el nodo mPlano
-  sinbad->setAnimation("Dance");
+  sinbad->setAnimation("Dance");                                    // hacemos que baile por defecto
   //mSinbadNode->yaw(Ogre::Degree(-45));
   //mSinbadNode->showBoundingBox(true);
   //mSinbadNode->setVisible(false);
