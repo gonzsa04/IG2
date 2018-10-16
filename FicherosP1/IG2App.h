@@ -9,6 +9,7 @@
 #include "Toy.h"
 #include "Sinbad.h"
 #include "Plano.h"
+#include "Bomb.h"
 
 using namespace std;
 
@@ -35,11 +36,13 @@ protected:
   Ogre::SceneNode* mCamNode = nullptr;
   Ogre::SceneNode* mPlano = nullptr;
   Ogre::SceneNode* mToy = nullptr;
+  Ogre::SceneNode* mBomba = nullptr;
   Ogre::SceneNode* mSinbadNode = nullptr;
   OgreBites::CameraMan* mCamMgr = nullptr;
   Toy* toy = nullptr;
   Sinbad* sinbad = nullptr;
   Plano* plano = nullptr;
+  Bomb* bomba = nullptr;
 };
 
 #endif

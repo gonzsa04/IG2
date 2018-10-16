@@ -122,7 +122,19 @@ void IG2App::setupScene(void)
 
   sinbad->setPosition(400, 100, -300);                              // cambiamos posicion y escala del nodo mSinbadNode respecto a su padre,
   sinbad->setScale(20, 20, 20);                                     // el nodo mPlano
-  sinbad->setAnimation("Dance");                                    // hacemos que baile por defecto
+  //mSinbadNode->yaw(Ogre::Degree(-45));
+  //mSinbadNode->showBoundingBox(true);
+  //mSinbadNode->setVisible(false);
+
+  //------------------------------------------------------------------------
+
+  //-------------------------------BOMBA-----------------------------------
+
+  mBomba = mPlano->createChildSceneNode("nBomba");            
+  bomba = new Bomb(mBomba);                  
+
+  bomba->setPosition(400, 100, 300);                              
+  bomba->setScale(1,1,1);
   //mSinbadNode->yaw(Ogre::Degree(-45));
   //mSinbadNode->showBoundingBox(true);
   //mSinbadNode->setVisible(false);
