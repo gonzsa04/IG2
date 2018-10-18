@@ -5,8 +5,11 @@
 #include <OgreAnimationState.h>
 #include <vector>
 #include <OgreFrameListener.h>
+#include <OgreAnimation.h>
+#include <OgreKeyFrame.h>
 
 using namespace std;
+using namespace Ogre;
 
 enum ActualAnim {
 	DANCING,
@@ -23,7 +26,7 @@ private:
 	void setAnimation(string name, bool b);
 
 public:
-	Sinbad(Ogre::SceneNode* sceneNode, std::string mesh);
+	Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion = 3.0, float tamDesp = 10.0);
 
 	void setAnimation(ActualAnim newAnim) {              // cambia de animacion, la activa y hace que se repita
 		actualAnim = newAnim;

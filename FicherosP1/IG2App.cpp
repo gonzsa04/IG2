@@ -119,22 +119,15 @@ void IG2App::setupScene(void)
   mSinbadNode = mPlano->createChildSceneNode("nSinbad");            // hacemos que el nodo mSinbadNode sea hijo del nodo mPlano
   sinbad = new Sinbad(mSinbadNode, "Sinbad.mesh");                  // creamos a Sinbad, que por debajo se adjuntara al nodo mSinbadNode
   addInputListener(sinbad);                                         // añadimos Sinbad a la lista de oyentes para poder recibir eventos de teclado
-
-  sinbad->setPosition(400, 100, -300);                              // cambiamos posicion y escala del nodo mSinbadNode respecto a su padre,
-  sinbad->setScale(20, 20, 20);                                     // el nodo mPlano
   //mSinbadNode->yaw(Ogre::Degree(-45));
   //mSinbadNode->showBoundingBox(true);
   //mSinbadNode->setVisible(false);
 
-  //------------------------------------------------------------------------
-
   //-------------------------------BOMBA-----------------------------------
 
   mBomba = mPlano->createChildSceneNode("nBomba");            
-  bomba = new Bomb(mBomba);                  
-
-  bomba->setPosition(400, 100, 300);                              
-  bomba->setScale(1,1,1);
+  bomba = new Bomb(mBomba);           
+  addInputListener(bomba);
   //mSinbadNode->yaw(Ogre::Degree(-45));
   //mSinbadNode->showBoundingBox(true);
   //mSinbadNode->setVisible(false);

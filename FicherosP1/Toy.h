@@ -41,6 +41,7 @@ public:
 		mOmbligo->attachObject(ombligo);
 
 		//posicionamiento y escalado relativos (cada uno respecto a su padre)
+		mCuello->setPosition(-300, 0, 0);
 		mNariz->setPosition(100, 15, 0);
 		mNariz->setScale(0.175, 0.175, 0.175);
 		mCabeza->setPosition(0, 140, 0);
