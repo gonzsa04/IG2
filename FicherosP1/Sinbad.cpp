@@ -1,7 +1,7 @@
 #include "Sinbad.h"
 
-Sinbad::Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion, float tamDesp) : GameObject(sceneNode, mesh) {
-	sceneNode_->setPosition(400, 100, -300);                         // cambiamos posicion y escala del nodo mSinbadNode respecto a su padre,
+Sinbad::Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion, PosicionesAnimacion posAnim) : GameObject(sceneNode, mesh) {
+	sceneNode_->setPosition(450, 100, -200);                         // cambiamos posicion y escala del nodo mSinbadNode respecto a su padre,
 	sceneNode_->setScale(20, 20, 20);                                // el nodo mPlano
 
 	espada1 = sceneNode_->getCreator()->createEntity("Sword.mesh");  // creamos dos espadas y las situamos
@@ -22,28 +22,45 @@ Sinbad::Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion, flo
 	Animation* animation = sceneNode_->getCreator()->createAnimation("recorrePlano", duracion);
 	NodeAnimationTrack* track = animation->createNodeTrack(0);
 	track->setAssociatedNode(sceneNode_);
-	Vector3 keyframePos = { 0, 0, 0 };
-	Real longitudPaso = duracion / 4.0; // uniformes
+	Vector3 keyframePos;
+	Real longitudPaso = duracion / 8.0; // uniformes
 	TransformKeyFrame * kf; // 5 keyFrames: origen(0), arriba, origen, abajo, origen(4)
 
 	kf = track->createNodeKeyFrame(longitudPaso * 0); // Keyframe 0: origen
+	keyframePos = { 0, 0, 0 };
 	kf->setTranslate(keyframePos); // Origen: Vector3
 
 	kf = track->createNodeKeyFrame(longitudPaso * 1); // Keyframe 1: arriba
-	keyframePos += Ogre::Vector3::UNIT_Y * tamDesp;
+	keyframePos += Ogre::Vector3::UNIT_Z * posAnim.anchuraZ;
 	kf->setTranslate(keyframePos); // Arriba
 
 	kf = track->createNodeKeyFrame(longitudPaso * 2); // Keyframe 2: origen
-	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_Y * tamDesp;
+	keyframePos += Ogre::Vector3::UNIT_Z * posAnim.diagonal;
+	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_X * posAnim.diagonal;
 	kf->setTranslate(keyframePos); // Origen
 
-	kf = track->createNodeKeyFrame(longitudPaso * 3); // Keyframe 3: abajo
-	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_Y * tamDesp;
-	kf->setTranslate(keyframePos); // Abajo
+	kf = track->createNodeKeyFrame(longitudPaso * 3); // Keyframe 1: arriba
+	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_X * posAnim.largoX;
+	kf->setTranslate(keyframePos); // Arriba
 
-	kf = track->createNodeKeyFrame(longitudPaso * 4); // Keyframe 4: origen
-	keyframePos += Ogre::Vector3::UNIT_Y * tamDesp;
+	kf = track->createNodeKeyFrame(longitudPaso * 4); // Keyframe 2: origen
+	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_Z * posAnim.diagonal;
+	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_X * posAnim.diagonal;
 	kf->setTranslate(keyframePos); // Origen
+
+	kf = track->createNodeKeyFrame(longitudPaso * 5); // Keyframe 1: arriba
+	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_Z * posAnim.anchuraZ;
+	kf->setTranslate(keyframePos); // Arriba
+
+	kf = track->createNodeKeyFrame(longitudPaso * 6); // Keyframe 2: origen
+	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_Z * posAnim.diagonal;
+	keyframePos += Ogre::Vector3::UNIT_X * posAnim.diagonal;
+	kf->setTranslate(keyframePos); // Origen
+
+	kf = track->createNodeKeyFrame(longitudPaso * 7); // Keyframe 1: arriba
+	keyframePos += Ogre::Vector3::UNIT_X * posAnim.largoX;
+	kf->setTranslate(keyframePos); // Arriba
+
 
 	animations[3] = sceneNode_->getCreator()->createAnimationState("recorrePlano");  // lo añadimos al resto de animaciones
 

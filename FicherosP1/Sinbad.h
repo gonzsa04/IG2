@@ -16,6 +16,12 @@ enum ActualAnim {
 	RUNNING
 };
 
+struct PosicionesAnimacion {
+	float anchuraZ;
+	float largoX;
+	float diagonal;
+};
+
 class Sinbad : public GameObject, public OgreBites::InputListener
 {
 private:
@@ -26,7 +32,7 @@ private:
 	void setAnimation(string name, bool b);
 
 public:
-	Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion = 3.0, float tamDesp = 10.0);
+	Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion = 5.0, PosicionesAnimacion posAnim = { 400, 600, 150 });
 
 	void setAnimation(ActualAnim newAnim) {              // cambia de animacion, la activa y hace que se repita
 		actualAnim = newAnim;
