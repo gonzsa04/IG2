@@ -36,7 +36,7 @@ public:
 
 	void updateAnim();
 
-	//metodo heredado de InputListener. Le indica al gestor de la animacion el tiempo transcurrido para que esta avance
+	//metodo heredado de InputListener. Le indica a las animaciones activas el tiempo transcurrido para que estas avancen
 	virtual void frameRendered(const Ogre::FrameEvent & evt) {
 		for (int i = 0; i < animations.size(); i++) {
 			if(animations[i]->getEnabled()) animations[i]->addTime(evt.timeSinceLastFrame);

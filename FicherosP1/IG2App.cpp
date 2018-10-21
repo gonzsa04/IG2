@@ -128,9 +128,6 @@ void IG2App::setupScene(void)
   mBomba = mPlano->createChildSceneNode("nBomba");            
   bomba = new Bomb(mBomba);           
   addInputListener(bomba);
-  //mSinbadNode->yaw(Ogre::Degree(-45));
-  //mSinbadNode->showBoundingBox(true);
-  //mSinbadNode->setVisible(false);
 
   //------------------------------------------------------------------------
 
