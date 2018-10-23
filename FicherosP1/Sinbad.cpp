@@ -42,55 +42,53 @@ Sinbad::Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion, Pos
 	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_X * posAnim.diagonal;
 	kf->setTranslate(keyframePos); // Origen
 
-	quat.w = sqrt(0.5);
+	dest = { -1, 0, 0 };
+	quat = src.getRotationTo(dest);
 	kf->setRotation(quat);
 
 	kf = track->createNodeKeyFrame(longitudPaso * 3); // Keyframe 1: arriba
 	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_X * posAnim.largoX;
 	kf->setTranslate(keyframePos); // Arriba
 
-	sceneNode_->rotate(quat);
-	sceneNode_->setOrientation(quat);
-	sceneNode_->setInheritOrientation(false); // por defecto true
+	kf->setRotation(quat);
 
 	kf = track->createNodeKeyFrame(longitudPaso * 4); // Keyframe 2: origen
 	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_Z * posAnim.diagonal;
 	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_X * posAnim.diagonal;
 	kf->setTranslate(keyframePos); // Origen
 
-	quat.w = sqrt(0.5);
+	dest = { 0, 0, -1 };
+	quat = src.getRotationTo(dest);
 	kf->setRotation(quat);
 
 	kf = track->createNodeKeyFrame(longitudPaso * 5); // Keyframe 1: arriba
 	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_Z * posAnim.anchuraZ;
 	kf->setTranslate(keyframePos); // Arriba
 
-	sceneNode_->rotate(quat);
-	sceneNode_->setOrientation(quat);
-	sceneNode_->setInheritOrientation(false); // por defecto true
+	kf->setRotation(quat);
 
 	kf = track->createNodeKeyFrame(longitudPaso * 6); // Keyframe 2: origen
 	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_Z * posAnim.diagonal;
 	keyframePos += Ogre::Vector3::UNIT_X * posAnim.diagonal;
 	kf->setTranslate(keyframePos); // Origen
 
-	quat.w = sqrt(0.5);
+	dest = { 1, 0, 0 };
+	quat = src.getRotationTo(dest);
 	kf->setRotation(quat);
 
 	kf = track->createNodeKeyFrame(longitudPaso * 7); // Keyframe 1: arriba
 	keyframePos += Ogre::Vector3::UNIT_X * posAnim.largoX;
 	kf->setTranslate(keyframePos);
 
-	sceneNode_->rotate(quat);
-	sceneNode_->setOrientation(quat);
-	sceneNode_->setInheritOrientation(false); // por defecto true
+	kf->setRotation(quat);
 
 	kf = track->createNodeKeyFrame(longitudPaso * 8); // Keyframe 2: origen
 	keyframePos += Ogre::Vector3::UNIT_Z * posAnim.diagonal;
 	keyframePos += Ogre::Vector3::UNIT_X * posAnim.diagonal;
 	kf->setTranslate(keyframePos); // Origen
 
-	quat.w = sqrt(0.5);
+	dest = { 0, 0, 1 };
+	quat = src.getRotationTo(dest);
 	kf->setRotation(quat);
 
 
