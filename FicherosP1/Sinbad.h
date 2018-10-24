@@ -13,7 +13,8 @@ using namespace Ogre;
 
 enum ActualAnim {
 	DANCING,
-	RUNNING
+	RUNNING,
+	DYING
 };
 
 struct PosicionesAnimacion {
@@ -28,8 +29,11 @@ private:
 	Ogre::Entity *espada1, *espada2;
 	std::vector<Ogre::AnimationState*> animations;
 	ActualAnim actualAnim = DANCING;
+	float duracion_;
 
-	void setAnimation(string name, bool b);
+	void setAnimation(string name, bool b, bool loop);
+	void createRunPlaneAnim(PosicionesAnimacion posAnim);
+	void createDyingAnim();
 
 public:
 	Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion = 5.0, PosicionesAnimacion posAnim = { 400, 600, 150 });
@@ -45,7 +49,7 @@ public:
 	//metodo heredado de InputListener. Le indica a las animaciones activas el tiempo transcurrido para que estas avancen
 	virtual void frameRendered(const Ogre::FrameEvent & evt) {
 		for (int i = 0; i < animations.size(); i++) {
-			if(animations[i]->getEnabled()) animations[i]->addTime(evt.timeSinceLastFrame);
+			if(animations[i] != nullptr && animations[i]->getEnabled()) animations[i]->addTime(evt.timeSinceLastFrame);
 		}
 	}
 	virtual ~Sinbad() {}
