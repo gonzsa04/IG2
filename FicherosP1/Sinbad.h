@@ -11,12 +11,14 @@
 using namespace std;
 using namespace Ogre;
 
+// posibles estados de animacion en los que puede estar Sinbad
 enum ActualAnim {
-	DANCING,
+	DANCING, 
 	RUNNING,
 	DYING
 };
 
+// longitudes que ha de recorrer Sinbad en su animacion de correr alrededor del plano
 struct PosicionesAnimacion {
 	float anchuraZ;
 	float largoX;
@@ -27,19 +29,21 @@ class Sinbad : public GameObject, public OgreBites::InputListener
 {
 private:
 	Ogre::Entity *espada1, *espada2;
-	std::vector<Ogre::AnimationState*> animations;
-	ActualAnim actualAnim = DANCING;
-	float duracion_;
+	std::vector<Ogre::AnimationState*> animations;        // vector que guardara todas las animaciones de Sinbad
+	ActualAnim actualAnim = DANCING;                      // inicialmente estara bailando
+	float duracion_;                                      // duracion de la animacion de correr alrededor del plano
+	bool muerto = false;                                  // sinbad morira cuando llegue a la bomba
 
-	void setAnimation(string name, bool b, bool loop);
-	void createRunPlaneAnim(PosicionesAnimacion posAnim);
-	void createDyingAnim();
+	void setAnimation(string name, bool b, bool loop);    // establece una animacion a true o false y hace que sea loop o no
+	void createRunPlaneAnim(PosicionesAnimacion posAnim); // crea la animacion de correr alrededor del plano
+	void createDyingAnim();                               // crea la animacion de ir hacia la bomba y morir al llegar a ella
 
 public:
 	Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion = 5.0, PosicionesAnimacion posAnim = { 400, 600, 150 });
 
-	void setAnimation(ActualAnim newAnim) {              // cambia de animacion, la activa y hace que se repita
+	void setAnimation(ActualAnim newAnim) {               // cambia el estado de la animacion actual y la actualiza
 		actualAnim = newAnim;
+		updateAnim();
 	};
 
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
