@@ -4,6 +4,10 @@ Bomb::Bomb(SceneNode* sceneNode, std::string mesh, float duracion, float tamDesp
 	sceneNode_->setScale(0.3, 0.3, 0.3);  // modificamos escala
 	ent->setMaterialName(materialName);   // y añadimos el material deseado
 
+	pSys = sceneNode_->getCreator()->createParticleSystem("parSys", "Smoke");
+	sceneNode_->attachObject(pSys);
+	pSys->setEmitting(false);
+
 	// ------------------------------------------------------ANIMACIONES--------------------------------------------------------
 	// creamos una animacion personalizada para que parezca que flota en el agua
 	sceneNode_->setInitialState();       // establecemos la transformacion actual del nodo como el estado inicial de la animacion

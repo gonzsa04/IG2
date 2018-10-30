@@ -31,5 +31,7 @@ public:
 
 	virtual void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
 
+	virtual void receive(TipoEvent evt, GameObject* go) {}
+
 	virtual ~Plano();
 };

@@ -15,6 +15,7 @@ using namespace Ogre;
 enum ActualAnim {
 	DANCING, 
 	RUNNING,
+	RUNTOBOMB,
 	DYING
 };
 
@@ -36,6 +37,7 @@ private:
 
 	void setAnimation(string name, bool b, bool loop);    // establece una animacion a true o false y hace que sea loop o no
 	void createRunPlaneAnim(PosicionesAnimacion posAnim); // crea la animacion de correr alrededor del plano
+	void createRunToBombAnim();
 	void createDyingAnim();                               // crea la animacion de ir hacia la bomba y morir al llegar a ella
 
 public:
@@ -53,9 +55,23 @@ public:
 	//metodo heredado de InputListener. Le indica a las animaciones activas el tiempo transcurrido para que estas avancen
 	virtual void frameRendered(const Ogre::FrameEvent & evt) {
 		for (int i = 0; i < animations.size(); i++) {
-			if(animations[i] != nullptr && animations[i]->getEnabled()) animations[i]->addTime(evt.timeSinceLastFrame);
+			if (animations[i] != nullptr && animations[i]->getEnabled()) {
+				animations[i]->addTime(evt.timeSinceLastFrame);
+				if (actualAnim == RUNTOBOMB && animations[i]->hasEnded()) {
+					createDyingAnim();               // una vez hecho esto, creamos la animacion
+					setAnimation(DYING);
+				}
+			}
 		}
 	}
+
+	virtual void receive(TipoEvent evt, GameObject* go) {
+		if (evt == COLISION) {
+			createRunToBombAnim();
+			setAnimation(RUNTOBOMB);
+		}
+	}
+
 	virtual ~Sinbad() {}
 };
 

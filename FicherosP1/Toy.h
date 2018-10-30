@@ -54,14 +54,16 @@ public:
 
 	//metodo heredado de InputListener
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt) {
-		if (evt.keysym.sym == SDLK_t) {        //si pulsamos t se mueve discretamente
-			movimiento();
-		}
-		else if (evt.keysym.sym == SDLK_y) {   //si pulsamos y toy se para/anda
-			parado = !parado;
-		}
-		else if (evt.keysym.sym == SDLK_v) {   //si pulsamos v toy gira 45 grados
-			Giro45();
+		if (getActive()) {
+			if (evt.keysym.sym == SDLK_t) {        //si pulsamos t se mueve discretamente
+				movimiento();
+			}
+			else if (evt.keysym.sym == SDLK_y) {   //si pulsamos y toy se para/anda
+				parado = !parado;
+			}
+			else if (evt.keysym.sym == SDLK_v) {   //si pulsamos v toy gira 45 grados
+				Giro45();
+			}
 		}
 		return true;
 	}
@@ -69,11 +71,14 @@ public:
 	//metodo heredado de InputListener
 	//si toy no esta parado, se mueve de forma continua utilizando el t desde el ultimo frame
 	virtual void frameRendered(const Ogre::FrameEvent & evt) {
-		if (!parado) movimiento(evt.timeSinceLastFrame * 10);
+		if (getActive()) {
+			if (!parado) movimiento(evt.timeSinceLastFrame * 10);
+			mCabeza->yaw(Ogre::Radian(evt.timeSinceLastFrame * 5));
+		}
 	}
 
 	void movimiento(float vel = 1) {
-		mCabeza->yaw(Ogre::Radian(0.3*vel));                    //la cabeza gira en el eje y
+		//mCabeza->yaw(Ogre::Radian(0.3*vel));                    //la cabeza gira en el eje y
 		mCuerpo->roll(Ogre::Radian(-0.3*vel));                  //el cuerpo gira en el eje z (en la direccion que se mueve toy)
 		mCuello->translate(2*vel, 0, 0, Ogre::Node::TS_LOCAL);  //trasladamos toy entero en x (LOCAL para que se actualice de si mismo y no de su padre)
 	}
@@ -81,6 +86,22 @@ public:
 	void Giro45() {
 		mCuello->rotate(Ogre::Vector3(0,1,0), Ogre::Degree(45));
 	}
+
+	virtual void receive(TipoEvent evt, GameObject* go) {
+		if (evt == COLISION) {
+			setActive(false);
+			setInvisible();
+		}
+	}
+
+	void setInvisible() {
+		cabeza->setVisible(false);
+		nariz->setVisible(false);
+		cuerpo->setVisible(false);
+		ombligo->setVisible(false);
+	}
+
+	virtual Ogre::Entity* getEntity() { return cuerpo; }
 
 	virtual ~Toy() {}
 };

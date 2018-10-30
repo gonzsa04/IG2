@@ -11,10 +11,11 @@ Sinbad::Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion, Pos
 
 
 	// ------------------------------------------------------ANIMACIONES--------------------------------------------------------
-	animations.resize(5);                                            // introducimos todas las animaciones ya creadas que podran hacer a sinbad:
+	animations.resize(6);                                            // introducimos todas las animaciones ya creadas que podran hacer a sinbad:
 	animations[0] = ent->getAnimationState("Dance");                 // bailar
 	animations[1] = ent->getAnimationState("RunBase");               // correr->piernas
 	animations[2] = ent->getAnimationState("RunTop");                // correr brazos
+	animations[3] = ent->getAnimationState("DrawSwords");            // luchar con espadas
 
 	sceneNode_->setInitialState();       // establecemos la transformacion actual del nodo como el estado inicial de la animacion
 										 // a partir de ese transform se daran las transformaciones de la anim, por eso debe estar inicializado antes
@@ -106,16 +107,16 @@ void Sinbad::createRunPlaneAnim(PosicionesAnimacion posAnim) {  // crea la anima
 	quat = src.getRotationTo(dest);
 	kf->setRotation(quat);
 
-	animations[3] = sceneNode_->getCreator()->createAnimationState("recorrePlano");  // lo añadimos al resto de animaciones
+	animations[4] = sceneNode_->getCreator()->createAnimationState("recorrePlano");  // lo añadimos al resto de animaciones
 }
 
-void Sinbad::createDyingAnim() {  // crea la animacion de ir hacia la bomba y morir al llegar a ella
-	Animation* animation = sceneNode_->getCreator()->createAnimation("dying", duracion_);
+void Sinbad::createRunToBombAnim() {  // crea la animacion de ir hacia la bomba y morir al llegar a ella
+	Animation* animation = sceneNode_->getCreator()->createAnimation("runToBomb", duracion_);
 	NodeAnimationTrack* track = animation->createNodeTrack(0);
 	track->setAssociatedNode(sceneNode_);
 
 	Vector3 keyframePos;
-	Real longitudPaso = duracion_/3;
+	Real longitudPaso = duracion_ / 2;
 	TransformKeyFrame * kf;
 	Ogre::Vector3 src = sceneNode_->_getDerivedOrientation()*Vector3::UNIT_Z;                // orientacion inicial que lleve
 	Ogre::Vector3 dest = { -sceneNode_->getPosition().x, 0 , -sceneNode_->getPosition().z }; //orientacion final la de la bomba (en el 0, 0, 0)
@@ -130,21 +131,36 @@ void Sinbad::createDyingAnim() {  // crea la animacion de ir hacia la bomba y mo
 
 	kf = track->createNodeKeyFrame(longitudPaso * 2); // Keyframe 2: va hacia la bomba (manteniendo la misma orientacion)
 	keyframePos -= { sceneNode_->getPosition().x, 0, sceneNode_->getPosition().z };
-	kf->setTranslate(keyframePos); // Arriba
+	kf->setTranslate(keyframePos);
 	kf->setRotation(quat);
 
-	kf = track->createNodeKeyFrame(longitudPaso * 2); // Keyframe 3: al llegar a ella cae al suelo boca arriba
+	animations[5] = sceneNode_->getCreator()->createAnimationState("runToBomb");  // lo añadimos al resto de animaciones
+}
+
+void Sinbad::createDyingAnim() {  // crea la animacion de ir hacia la bomba y morir al llegar a ella
+	Animation* animation = sceneNode_->getCreator()->createAnimation("dying", duracion_);
+	NodeAnimationTrack* track = animation->createNodeTrack(0);
+	track->setAssociatedNode(sceneNode_);
+
+	Vector3 keyframePos;
+	Real longitudPaso = duracion_;
+	TransformKeyFrame * kf;
+	Ogre::Vector3 src = sceneNode_->_getDerivedOrientation()*Vector3::UNIT_Z;                // orientacion inicial que lleve
+	Ogre::Vector3 dest = { -sceneNode_->getPosition().x, 0 , -sceneNode_->getPosition().z }; //orientacion final la de la bomba (en el 0, 0, 0)
+	Ogre::Quaternion quat = src.getRotationTo(dest);
+
+	kf = track->createNodeKeyFrame(longitudPaso * 0); // Keyframe 3: al llegar a ella cae al suelo boca arriba
 	keyframePos.y -= 100;
 	kf->setTranslate(keyframePos);
 	quat = { (Real)sqrt(0.5), -(Real)sqrt(0.5), 0, 0 };
 	kf->setRotation(quat);
 
-	kf = track->createNodeKeyFrame(longitudPaso * 3); // Keyframe 4: se le lleva la corriente del agua (manteniendose boca arriba)
+	kf = track->createNodeKeyFrame(longitudPaso * 1); // Keyframe 4: se le lleva la corriente del agua (manteniendose boca arriba)
 	keyframePos += { 800, 0, 0 };
 	kf->setTranslate(keyframePos); // Origen
 	kf->setRotation(quat);
 
-	animations[4] = sceneNode_->getCreator()->createAnimationState("dying");  // lo añadimos al resto de animaciones
+	animations[5] = sceneNode_->getCreator()->createAnimationState("dying");  // lo añadimos al resto de animaciones
 }
 
 bool Sinbad::keyPressed(const OgreBites::KeyboardEvent& evt) {
@@ -156,8 +172,8 @@ bool Sinbad::keyPressed(const OgreBites::KeyboardEvent& evt) {
 		else if (evt.keysym.sym == SDLK_b) { // si pulsamos "b" pasara de lo que este haciendo a morir
 			muerto = true;
 			sceneNode_->setInitialState();   // volvemos a actualizar el initialState para que tenga en cuenta la pos actual y no la inicial
-			createDyingAnim();               // una vez hecho esto, creamos la animacion
-			setAnimation(DYING);
+			createRunToBombAnim();               // una vez hecho esto, creamos la animacion
+			setAnimation(RUNTOBOMB);
 		}
 	}
 	return true;
@@ -180,15 +196,30 @@ void Sinbad::updateAnim() {      // dependiendo del estado en que nos encontremo
 		ent->detachObjectFromBone(espada1);
 		ent->attachObjectToBone("Sheath.R", espada1);
 	}
-	else if (actualAnim == DYING) {
+	else if (actualAnim == RUNTOBOMB) {
 		setAnimation("RunBase", true, true);
-		setAnimation("dying", true, false);
+		setAnimation("dying", false, false);
 		setAnimation("RunTop", false, false);
 		setAnimation("recorrePlano", false, false);
 		setAnimation("Dance", false, false);
+		setAnimation("DrawSwords", true, true);
+		setAnimation("runToBomb", true, false);
 		ent->detachObjectFromBone(espada1);
 		ent->attachObjectToBone("Handle.R", espada1);
 		ent->detachObjectFromBone(espada2);
 		ent->attachObjectToBone("Handle.L", espada2);
+	}
+	else if (actualAnim == DYING) {
+		setAnimation("RunBase", false, false);
+		setAnimation("dying", true, false);
+		setAnimation("RunTop", false, false);
+		setAnimation("recorrePlano", false, false);
+		setAnimation("runToBomb", false, false);
+		setAnimation("DrawSwords", false, false);
+		setAnimation("Dance", false, false);
+		ent->detachObjectFromBone(espada1);
+		ent->attachObjectToBone("Sheath.R", espada1);
+		ent->detachObjectFromBone(espada2);
+		ent->attachObjectToBone("Sheath.L", espada2);
 	}
 }

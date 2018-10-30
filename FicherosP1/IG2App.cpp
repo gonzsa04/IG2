@@ -17,8 +17,21 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
   {
 	  giroPlano();
   }
+  else if (evt.keysym.sym == SDLK_c) {
+	  if(!cameraSigue) mCamMgr->setTarget(mSinbadNode);
+	  else mCamMgr->setTarget(mSM->getRootSceneNode());
+	  cameraSigue = !cameraSigue;
+  }
   
   return true;
+}
+
+void IG2App::frameRendered(const Ogre::FrameEvent & evt) {
+	if (toy->getActive() && bomba->getActive()) {
+		Sphere bombaCollision = bomba->getEntity()->getWorldBoundingSphere();
+		Sphere toyCollision = toy->getEntity()->getWorldBoundingSphere();
+		if (bombaCollision.intersects(toyCollision)) GameObject::fireAppEvent(COLISION, toy);
+	}
 }
 
 void IG2App::giroPlano() {
@@ -129,7 +142,13 @@ void IG2App::setupScene(void)
   bomba = new Bomb(mBomba);           
   addInputListener(bomba);
 
-  //------------------------------------------------------------------------
+  //------------------------------EVENTOS----------------------------------
+
+  GameObject::addAppListener(toy);
+  GameObject::addAppListener(sinbad);
+  GameObject::addAppListener(bomba);
+
+  //-----------------------------------------------------------------------
 
   mCamMgr = new OgreBites::CameraMan(mCamNode);
   addInputListener(mCamMgr);
@@ -138,7 +157,7 @@ void IG2App::setupScene(void)
   //mCamMgr->setTarget(mSinbadNode);  
   //mCamMgr->setYawPitchDist(Radian(0), Degree(30), 100);
 
-  //------------------------------------------------------------------------
+  //-----------------------------------------------------------------------
 
 }
 

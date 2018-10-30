@@ -27,6 +27,8 @@ protected:
   void giroPlano();
 
   virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);  // InputListener
+
+  virtual void frameRendered(const Ogre::FrameEvent & evt);
       
   Ogre::SceneManager* mSM = nullptr;               //nodo del gestor de la escena
   OgreBites::TrayManager* mTrayMgr = nullptr;
@@ -38,11 +40,14 @@ protected:
   Ogre::SceneNode* mToy = nullptr;
   Ogre::SceneNode* mBomba = nullptr;
   Ogre::SceneNode* mSinbadNode = nullptr;
+
   OgreBites::CameraMan* mCamMgr = nullptr;
   Toy* toy = nullptr;
   Sinbad* sinbad = nullptr;
   Plano* plano = nullptr;
   Bomb* bomba = nullptr;
+
+  bool cameraSigue = false;
 };
 
 #endif
