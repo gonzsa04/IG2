@@ -10,12 +10,17 @@ Sinbad::Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion, Pos
 	ent->attachObjectToBone("Sheath.L", espada2);
 
 
-	// ------------------------------------------------------ANIMACIONES--------------------------------------------------------
+	// ANIMACIONES
 	animations.resize(6);                                            // introducimos todas las animaciones ya creadas que podran hacer a sinbad:
 	animations[0] = ent->getAnimationState("Dance");                 // bailar
 	animations[1] = ent->getAnimationState("RunBase");               // correr->piernas
 	animations[2] = ent->getAnimationState("RunTop");                // correr brazos
 	animations[3] = ent->getAnimationState("DrawSwords");            // luchar con espadas
+
+	/*para consultar el nombre de las animaciones:
+	AnimationStateSet * aux = ent->getAllAnimationStates();
+	auto it = aux->getAnimationStateIterator().begin();
+	while (it != aux->getAnimationStateIterator().end()) { auto s = it->first; ++it; }*/
 
 	sceneNode_->setInitialState();       // establecemos la transformacion actual del nodo como el estado inicial de la animacion
 										 // a partir de ese transform se daran las transformaciones de la anim, por eso debe estar inicializado antes
@@ -23,6 +28,52 @@ Sinbad::Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion, Pos
 	createRunPlaneAnim(posAnim);         // creamos una animacion personalizada que hara que recorra el plano
 	updateAnim();                        // actualizamos animacion actual (inicialmente DANCING)
 }
+
+
+//-------------------------------------------------------EVENTOS----------------------------------------------------------------
+
+bool Sinbad::keyPressed(const OgreBites::KeyboardEvent& evt) {
+	if (!muerto) {
+		if (evt.keysym.sym == SDLK_r) {      // si pulsamos "r" pasara de bailar a correr y viceversa
+			if (actualAnim == DANCING) 	setAnimationState(RUNNING);
+			else if (actualAnim == RUNNING) setAnimationState(DANCING);
+		}
+		else if (evt.keysym.sym == SDLK_b) { // si pulsamos "b" pasara de lo que este haciendo a morir
+			muerto = true;
+			sceneNode_->setInitialState();   // volvemos a actualizar el initialState para que tenga en cuenta la pos actual y no la inicial
+			createRunToBombAnim();           // una vez hecho esto, creamos la animacion
+			setAnimationState(RUNTOBOMB);
+		}
+	}
+	return true;
+}
+
+//metodo heredado de InputListener. Le indica a las animaciones activas el tiempo transcurrido para que estas avancen
+void Sinbad::frameRendered(const Ogre::FrameEvent & evt) {
+	for (int i = 0; i < animations.size(); i++) {
+		if (animations[i] != nullptr && animations[i]->getEnabled()) {
+			animations[i]->addTime(evt.timeSinceLastFrame);
+			if (actualAnim == RUNTOBOMB && animations[i]->hasEnded()) {
+				createDyingAnim();                        // una vez hecho esto, creamos la animacion
+				setAnimationState(DYING);
+				GameObject::fireAppEvent(COLISION, this); // y mandamos el evento de que ha chocado con la bomba
+			}
+		}
+	}
+}
+
+void Sinbad::receive(TipoEvent evt, GameObject* go) {
+	if (evt == COLISION && !muerto) {
+		muerto = true;
+		sceneNode_->setInitialState();
+		createRunToBombAnim();
+		setAnimationState(RUNTOBOMB);
+	}
+}
+
+//--------------------------------------------------------------------------------------------------------------------------
+
+// ------------------------------------------------------ANIMACIONES--------------------------------------------------------
 
 void Sinbad::setAnimation(string name, bool b, bool loop) {  // establece una animacion a true o false y hace que sea loop o no
 	for (int i = 0; i < animations.size(); i++) {
@@ -32,6 +83,56 @@ void Sinbad::setAnimation(string name, bool b, bool loop) {  // establece una an
 		}
 	}
 };
+
+void Sinbad::setAnimationState(ActualAnim newAnim) {         // cambia el estado de la animacion actual y la actualiza
+	actualAnim = newAnim;
+	updateAnim();
+};
+
+void Sinbad::updateAnim() {      // dependiendo del estado en que nos encontremos activara una animacion u otra
+	if (actualAnim == RUNNING) {
+		setAnimation("RunBase", true, true);
+		setAnimation("RunTop", true, true);
+		setAnimation("recorrePlano", true, true);
+		setAnimation("Dance", false, false);
+		ent->detachObjectFromBone(espada1);
+		ent->attachObjectToBone("Handle.R", espada1);
+	}
+	else if (actualAnim == DANCING) {
+		setAnimation("RunBase", false, false);
+		setAnimation("RunTop", false, false);
+		setAnimation("recorrePlano", false, false);
+		setAnimation("Dance", true, true);
+		ent->detachObjectFromBone(espada1);
+		ent->attachObjectToBone("Sheath.R", espada1);
+	}
+	else if (actualAnim == RUNTOBOMB) {
+		setAnimation("RunBase", true, true);
+		setAnimation("dying", false, false);
+		setAnimation("RunTop", false, false);
+		setAnimation("recorrePlano", false, false);
+		setAnimation("Dance", false, false);
+		setAnimation("DrawSwords", true, true);
+		setAnimation("runToBomb", true, false);
+		ent->detachObjectFromBone(espada1);
+		ent->attachObjectToBone("Handle.R", espada1);
+		ent->detachObjectFromBone(espada2);
+		ent->attachObjectToBone("Handle.L", espada2);
+	}
+	else if (actualAnim == DYING) {
+		setAnimation("RunBase", false, false);
+		setAnimation("dying", true, false);
+		setAnimation("RunTop", false, false);
+		setAnimation("recorrePlano", false, false);
+		setAnimation("runToBomb", false, false);
+		setAnimation("DrawSwords", false, false);
+		setAnimation("Dance", false, false);
+		ent->detachObjectFromBone(espada1);
+		ent->attachObjectToBone("Sheath.R", espada1);
+		ent->detachObjectFromBone(espada2);
+		ent->attachObjectToBone("Sheath.L", espada2);
+	}
+}
 
 void Sinbad::createRunPlaneAnim(PosicionesAnimacion posAnim) {  // crea la animacion de correr alrededor del plano
 	Animation* animation = sceneNode_->getCreator()->createAnimation("recorrePlano", duracion_); // creamos una anim con un nombre y duracion
@@ -163,63 +264,4 @@ void Sinbad::createDyingAnim() {  // crea la animacion de ir hacia la bomba y mo
 	animations[5] = sceneNode_->getCreator()->createAnimationState("dying");  // lo añadimos al resto de animaciones
 }
 
-bool Sinbad::keyPressed(const OgreBites::KeyboardEvent& evt) {
-	if (!muerto) {
-		if (evt.keysym.sym == SDLK_r) {      // si pulsamos "r" pasara de bailar a correr y viceversa
-			if (actualAnim == DANCING) 	setAnimation(RUNNING);
-			else if (actualAnim == RUNNING) setAnimation(DANCING);
-		}
-		else if (evt.keysym.sym == SDLK_b) { // si pulsamos "b" pasara de lo que este haciendo a morir
-			muerto = true;
-			sceneNode_->setInitialState();   // volvemos a actualizar el initialState para que tenga en cuenta la pos actual y no la inicial
-			createRunToBombAnim();               // una vez hecho esto, creamos la animacion
-			setAnimation(RUNTOBOMB);
-		}
-	}
-	return true;
-}
-
-void Sinbad::updateAnim() {      // dependiendo del estado en que nos encontremos activara una animacion u otra
-	if (actualAnim == RUNNING) {
-		setAnimation("RunBase", true, true);
-		setAnimation("RunTop", true, true);
-		setAnimation("recorrePlano", true, true);
-		setAnimation("Dance", false, false);
-		ent->detachObjectFromBone(espada1);
-		ent->attachObjectToBone("Handle.R", espada1);
-	}
-	else if (actualAnim == DANCING) {
-		setAnimation("RunBase", false, false);
-		setAnimation("RunTop", false, false);
-		setAnimation("recorrePlano", false, false);
-		setAnimation("Dance", true, true);
-		ent->detachObjectFromBone(espada1);
-		ent->attachObjectToBone("Sheath.R", espada1);
-	}
-	else if (actualAnim == RUNTOBOMB) {
-		setAnimation("RunBase", true, true);
-		setAnimation("dying", false, false);
-		setAnimation("RunTop", false, false);
-		setAnimation("recorrePlano", false, false);
-		setAnimation("Dance", false, false);
-		setAnimation("DrawSwords", true, true);
-		setAnimation("runToBomb", true, false);
-		ent->detachObjectFromBone(espada1);
-		ent->attachObjectToBone("Handle.R", espada1);
-		ent->detachObjectFromBone(espada2);
-		ent->attachObjectToBone("Handle.L", espada2);
-	}
-	else if (actualAnim == DYING) {
-		setAnimation("RunBase", false, false);
-		setAnimation("dying", true, false);
-		setAnimation("RunTop", false, false);
-		setAnimation("recorrePlano", false, false);
-		setAnimation("runToBomb", false, false);
-		setAnimation("DrawSwords", false, false);
-		setAnimation("Dance", false, false);
-		ent->detachObjectFromBone(espada1);
-		ent->attachObjectToBone("Sheath.R", espada1);
-		ent->detachObjectFromBone(espada2);
-		ent->attachObjectToBone("Sheath.L", espada2);
-	}
-}
+//--------------------------------------------------------------------------------------------------------------------------

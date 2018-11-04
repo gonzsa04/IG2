@@ -7,19 +7,21 @@ Plano::Plano(Ogre::SceneNode* sceneNode, string name, Camera* camRef, Vector3 u,
 	name_ = name;
 
 	// creamos malla
-	MeshManager::getSingleton().createPlane(name, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,   // el gestor de mallas tiene una unica instancia en toda la app (singleton)
-		Plane(u, f), width, height, numWsegments, numHsegments, normals, numTexCoords, numUtile, numVtile, v);    // De el utilizamos el metodo para crear una malla de un plano con nombre "Plano"
+	MeshManager::getSingleton().createPlane(name, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,           // el gestor de mallas tiene una unica instancia en toda la app (singleton)
+		Plane(u, f), width, height, numWsegments, numHsegments, normals, numTexCoords, numUtile, numVtile, v); // De el utilizamos el metodo para crear una malla de un plano con nombre "Plano"
 
-	plano = sceneNode_->getCreator()->createEntity(name);  // creamos entidad plano con esa malla
-	sceneNode_->attachObject(plano);                       // lo adjuntamos al nodo
-	setMaterial(matName);                                  // agregamos el material
+	plano = sceneNode_->getCreator()->createEntity(name);  // mandamos al gestor de la escena crear una entidad plano con esa malla
+	sceneNode_->attachObject(plano);                       // la adjuntamos al nodo plano
+	setMaterial(matName);                                  // y le agregamos el material
 
   /*Definir en un archivo de texto ("IG2App.material") un material de nombre "nombre" con
 	una unidad de textura para la imagen 1d_debug.png (mejor cambiar el nombre) y coeficientes de
 	reflexión (0.5, 0.5, 0.5). El archivo debe estar en media\IG2App, junto con los archivos de las imágenes que utilice
 	(copiarlas de media\materials\textures). Añadir scroll_anim 0.1 0.0 para que se mueva horizontalmente*/
 
-	mp = new MovablePlane(u, f);                           // creamos el panel
+	//-------------------------------------------------REFLEJO------------------------------------------------------------------
+
+	mp = new MovablePlane(u, f);                           // creamos el panel sobre el que se quiere realizar el reflejo
 	sceneNode_->attachObject(mp);                          // lo adjuntamos al nodo
 
 	camRef->enableReflection(mp);                          // configuramos el reflejo sobre el plano
@@ -37,8 +39,8 @@ Plano::Plano(Ogre::SceneNode* sceneNode, string name, Camera* camRef, Vector3 u,
 
 	// añadimos la nueva unidad de textura al material del panel
 	TextureUnitState* tu = plano->getSubEntities()[0]->getMaterial()->getTechniques()[0]->getPasses()[0]->createTextureUnitState("texRtt");
-	tu->setColourOperation(LBO_MODULATE);                   // multiplicamos->el reflejo tendera a ser mas oscuro
-	// LBO_ADD / LBO_ALPHA_BLEND / LBO_REPLACE
+	tu->setColourOperation(LBO_MODULATE);                   // multiplicar->el reflejo tendera a ser mas oscuro
+	// LBO_ADD / LBO_ALPHA_BLEND / LBO_REPLACE              // añadir->el reflejo tendera a ser mas claro
 	tu->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
 	tu->setProjectiveTexturing(true, camRef);
 

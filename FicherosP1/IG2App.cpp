@@ -17,7 +17,7 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
   {
 	  giroPlano();
   }
-  else if (evt.keysym.sym == SDLK_c) {
+  else if (evt.keysym.sym == SDLK_c) { // si se pulsa c la camara establece como objetivo a sinbad o a la raiz de la escena
 	  if(!cameraSigue) mCamMgr->setTarget(mSinbadNode);
 	  else mCamMgr->setTarget(mSM->getRootSceneNode());
 	  cameraSigue = !cameraSigue;
@@ -27,10 +27,10 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 }
 
 void IG2App::frameRendered(const Ogre::FrameEvent & evt) {
-	if (toy->getActive() && bomba->getActive()) {
+	if (toy->getActive() && bomba->getActive()) {  // detectamos colision entre toy y la bomba (si estos no han colisionado ya)
 		Sphere bombaCollision = bomba->getEntity()->getWorldBoundingSphere();
 		Sphere toyCollision = toy->getEntity()->getWorldBoundingSphere();
-		if (bombaCollision.intersects(toyCollision)) GameObject::fireAppEvent(COLISION, toy);
+		if (bombaCollision.intersects(toyCollision)) GameObject::fireAppEvent(COLISION, toy); // en tal caso lanzamos un evento
 	}
 }
 
@@ -101,6 +101,13 @@ void IG2App::setupScene(void)
 
   mCamNode->attachObject(camRef);
 
+  mCamMgr = new OgreBites::CameraMan(mCamNode);
+  addInputListener(mCamMgr);
+  mCamMgr->setStyle(OgreBites::CS_ORBIT);
+
+  //mCamMgr->setTarget(mSinbadNode);  
+  //mCamMgr->setYawPitchDist(Radian(0), Degree(30), 100);
+
   //-----------------------------------LUCES---------------------------------
 
   // without light we would just get a black screen 
@@ -138,26 +145,16 @@ void IG2App::setupScene(void)
 
   //-------------------------------BOMBA-----------------------------------
 
-  mBomba = mPlano->createChildSceneNode("nBomba");            
+  mBomba = mPlano->createChildSceneNode("nBomba");                  // lo mismo con la bomba  
   bomba = new Bomb(mBomba);           
   addInputListener(bomba);
 
   //------------------------------EVENTOS----------------------------------
 
-  GameObject::addAppListener(toy);
+  GameObject::addAppListener(toy);    // GameObjects de la escena que pueden recibir eventos
   GameObject::addAppListener(sinbad);
   GameObject::addAppListener(bomba);
 
   //-----------------------------------------------------------------------
-
-  mCamMgr = new OgreBites::CameraMan(mCamNode);
-  addInputListener(mCamMgr);
-  mCamMgr->setStyle(OgreBites::CS_ORBIT);  
-  
-  //mCamMgr->setTarget(mSinbadNode);  
-  //mCamMgr->setYawPitchDist(Radian(0), Degree(30), 100);
-
-  //-----------------------------------------------------------------------
-
 }
 

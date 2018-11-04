@@ -35,43 +35,21 @@ private:
 	float duracion_;                                      // duracion de la animacion de correr alrededor del plano
 	bool muerto = false;                                  // sinbad morira cuando llegue a la bomba
 
+	// EVENTOS
+	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
+	virtual void frameRendered(const Ogre::FrameEvent & evt);
+	virtual void receive(TipoEvent evt, GameObject* go);
+
+	// ANIMACIONES
 	void setAnimation(string name, bool b, bool loop);    // establece una animacion a true o false y hace que sea loop o no
+	void setAnimationState(ActualAnim newAnim);           // cambia el estado de la animacion actual y la actualiza
+	void updateAnim();                                    // dependiendo del estado en que nos encontremos activara una animacion u otra
 	void createRunPlaneAnim(PosicionesAnimacion posAnim); // crea la animacion de correr alrededor del plano
-	void createRunToBombAnim();
-	void createDyingAnim();                               // crea la animacion de ir hacia la bomba y morir al llegar a ella
+	void createRunToBombAnim();                           // crea la animacion de ir hacia la bomba
+	void createDyingAnim();                               // crea la animacion de morir al llegar a la bomba
 
 public:
 	Sinbad(Ogre::SceneNode* sceneNode, std::string mesh, float duracion = 5.0, PosicionesAnimacion posAnim = { 400, 600, 150 });
-
-	void setAnimation(ActualAnim newAnim) {               // cambia el estado de la animacion actual y la actualiza
-		actualAnim = newAnim;
-		updateAnim();
-	};
-
-	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt);
-
-	void updateAnim();
-
-	//metodo heredado de InputListener. Le indica a las animaciones activas el tiempo transcurrido para que estas avancen
-	virtual void frameRendered(const Ogre::FrameEvent & evt) {
-		for (int i = 0; i < animations.size(); i++) {
-			if (animations[i] != nullptr && animations[i]->getEnabled()) {
-				animations[i]->addTime(evt.timeSinceLastFrame);
-				if (actualAnim == RUNTOBOMB && animations[i]->hasEnded()) {
-					createDyingAnim();               // una vez hecho esto, creamos la animacion
-					setAnimation(DYING);
-				}
-			}
-		}
-	}
-
-	virtual void receive(TipoEvent evt, GameObject* go) {
-		if (evt == COLISION) {
-			createRunToBombAnim();
-			setAnimation(RUNTOBOMB);
-		}
-	}
-
 	virtual ~Sinbad() {}
 };
 

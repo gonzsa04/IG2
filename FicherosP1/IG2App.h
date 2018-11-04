@@ -30,10 +30,10 @@ protected:
 
   virtual void frameRendered(const Ogre::FrameEvent & evt);
       
-  Ogre::SceneManager* mSM = nullptr;               //nodo del gestor de la escena
+  Ogre::SceneManager* mSM = nullptr;     //nodo del gestor de la escena, sera hijo del nodo raiz
   OgreBites::TrayManager* mTrayMgr = nullptr;
 
-  //nodos de los elementos de la escena
+  // nodos de los elementos de la escena
   Ogre::SceneNode* mLightNode = nullptr;
   Ogre::SceneNode* mCamNode = nullptr;
   Ogre::SceneNode* mPlano = nullptr;

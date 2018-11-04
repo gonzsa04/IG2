@@ -7,46 +7,36 @@
 #include <string>
 #include <vector>
 
-enum TipoEvent {
+enum TipoEvent { // tipos de evento que puede haber
 	COLISION
 };
 
-class GameObject                          // clase abstracta raíz de los objetos de la aplicación
+class GameObject                                   // clase abstracta, padre de los objetos de la aplicación
 {
 private:
-	static std::vector<GameObject*> appListeners;
+	static std::vector<GameObject*> appListeners;  // vector de oyentes
 protected:
-	Ogre::SceneNode* sceneNode_;          // nodo de la escena que apuntara a GameObject
+	Ogre::SceneNode* sceneNode_;                   // nodo de la escena que apuntara a GameObject
 	Ogre::Entity* ent;
 	bool active = true;
 
 public:
 	GameObject() {}
 
-	GameObject(Ogre::SceneNode* sceneNode, std::string mesh) : sceneNode_(sceneNode) {
-		ent = sceneNode_->getCreator()->createEntity(mesh);             //inicializamos la entidad ent con la malla indicada
-		sceneNode_->attachObject(ent);												  //hacemos que el nodo sceneNode apunte a la entidad ent
-	}
+	GameObject(Ogre::SceneNode* sceneNode, std::string mesh);
 
-	void setPosition(int x, int y, int z) {
-		sceneNode_->setPosition(x, y, z);
-	}
-
-	void setScale(int x, int y, int z) {
-		sceneNode_->setScale(x, y, z);
-	}
+	void setPosition(int x, int y, int z) { sceneNode_->setPosition(x, y, z); }
+	void setScale(int x, int y, int z) { sceneNode_->setScale(x, y, z); }
 
 	bool getActive() { return active; }
 	void setActive(bool b) { active = b; }
 
-	static void addAppListener(GameObject* go) { appListeners.push_back(go); }
-	static void fireAppEvent(TipoEvent evt, GameObject* go) { 
-		for (int i = 0; i < appListeners.size(); i++)
-			appListeners[i]->receive(evt, go); 
-	}
-	virtual void receive(TipoEvent evt, GameObject* go) = 0;
+	// eventos
+	static void addAppListener(GameObject* go) { appListeners.push_back(go); } // añade un nuevo oyente
+	static void fireAppEvent(TipoEvent evt, GameObject* go); // lanza un evento y hace que todos sus oyentes lo reciban
+	virtual void receive(TipoEvent evt, GameObject* go) = 0; // metodo recibidor de eventos (las clases heredadas lo redefiniran)
 
 	Ogre::Entity* getEntity() { return ent; }
 
-	~GameObject() {}
+	virtual ~GameObject() {}
 };
