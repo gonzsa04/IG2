@@ -131,7 +131,7 @@ void IG2App::setupScene(void)
 
    //---------------------------------FONDO----------------------------------
 
-  mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -200), "ejemploShadersLM", 1, 1, true, 1.0, 100, 100);
+  mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -50), "ejemploShadersLM", 1, 1, true, 1.0, 100, 100);
 
   //---------------------------------TOY------------------------------------
 
