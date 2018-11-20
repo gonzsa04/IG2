@@ -1,0 +1,95 @@
+material Plano{
+    technique{
+        pass{
+            diffuse 0.5 0.5 0.5
+            ambient 0.1 0.2 0.3
+            specular 0.8 0.8 0.8 68
+            texture_unit{
+                texture Water02.jpg
+                scroll_anim 0.1 0.0
+                colour_op add
+            }
+        }
+    }
+    technique {
+        pass{
+            diffuse 0.5 0.5 0.5
+        }
+    }
+}
+
+material Bomba{
+    technique{
+        pass{
+            diffuse 0.5 0.5 0.5
+            ambient 0.1 0.2 0.3
+            specular 0.8 0.8 0.8 68
+            texture_unit{
+                texture BumpyMetal.jpg
+                colour_op add
+            }
+        }
+    }
+    technique {
+        pass{
+            diffuse 0.5 0.5 0.5
+        }
+    }
+}
+
+material Smoke{
+    technique{
+        pass{
+            lighting off
+            scene_blend alpha_blend
+            depth_write off
+            diffuse vertexcolour
+            texture_unit{
+                texture smoke.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}
+
+vertex_program vertexShaderLMglsl glsl {
+    source vertexShaderLMglsl.txt // archivo del código
+    default_params // valores para las variable uniform
+    {
+        param_named_auto modelViewProjMat worldviewproj_matrix
+        param_named_auto time time_0_1 25 // ciclo 50
+    }
+}
+
+fragment_program fragmentShaderLMglsl glsl {
+    source fragmentShaderLMglsl.txt // archivo
+    default_params // valores para las variable uniform 
+    {
+        param_named textura1 int 0 // unidad de textura
+        param_named textura2 int 1
+        //param_named_auto FB 0.5
+        //param_named intLuz float 1.0;
+    }
+}
+
+material ejemploShadersLM {
+    technique {
+        pass {
+            vertex_program_ref vertexShaderLMglsl
+            { // params ‐> default_params
+            }
+            fragment_program_ref fragmentShaderLMglsl
+            { // params ‐> default_params
+            }
+            texture_unit texture1 {
+                texture spaceSky.jpg 2d // archivo
+                //tex_address_mode clamp // por defecto se repite (repeat)
+                filtering bilinear
+            }
+            texture_unit texture2{
+                texture flare.png 2d // archivo
+                tex_address_mode wrap
+            }
+        } 
+    }
+}
