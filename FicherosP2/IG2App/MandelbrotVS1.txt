@@ -1,0 +1,17 @@
+#version 330 core
+in vec4 vertex; // atributos de los vértices a procesar
+in vec2 uv0;
+uniform mat4 modelViewProjMat; // matriz de transformación
+uniform float time;
+out vec2 vUv0;
+
+void main() {
+	// vUv0 = uv0;
+	vUv0.s = uv0.s - 0.5; // matriz
+	vUv0.t = 1 - uv0.t - 0.5;
+
+	vUv0.s = ((vUv0.s)*time);
+	vUv0.t = ((vUv0.t)*time);
+	
+	gl_Position = modelViewProjMat * vertex;
+}
