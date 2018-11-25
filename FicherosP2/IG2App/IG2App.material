@@ -54,16 +54,16 @@ material Smoke{
 
 vertex_program vertexShaderLMglsl glsl {
     source vertexShaderLMglsl.txt // archivo del código
-    default_params // valores para las variable uniform
+    default_params // valores para las variables uniform
     {
         param_named_auto modelViewProjMat worldviewproj_matrix
-        param_named_auto time time_0_1 25 // ciclo 50
+        param_named_auto time time_0_1 25 // ciclo 25->para el zoom
     }
 }
 
 fragment_program fragmentShaderLMglsl glsl {
     source fragmentShaderLMglsl.txt // archivo
-    default_params // valores para las variable uniform 
+    default_params // valores para las variables uniform 
     {
         param_named textura1 int 0 // unidad de textura
         param_named textura2 int 1
@@ -82,7 +82,7 @@ material ejemploShadersLM {
             { // params ‐> default_params
             }
             texture_unit texture1 {
-                texture spaceSky.jpg 2d // archivo
+                texture spaceSky.jpg 2d  // archivo
                 //tex_address_mode clamp // por defecto se repite (repeat)
                 filtering bilinear
             }
@@ -100,7 +100,7 @@ vertex_program MandelbrotVS1 glsl
     default_params // valores para las variables uniform
     {
         param_named_auto modelViewProjMat worldviewproj_matrix
-        param_named_auto time time_0_1 25 // ciclo 50
+        param_named_auto time time_0_1 25 // ciclo 25->para el zoom
     }
 }
 
