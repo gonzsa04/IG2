@@ -37,7 +37,7 @@ private:
 	void setInvisible();
 
 public:
-	Toy(Ogre::SceneNode* sceneNode, std::string mesh);
+	Toy(Ogre::SceneNode* sceneNode, std::string mesh, std::string material);
 
 	virtual Ogre::Entity* getEntity() { return cuerpo; }
 

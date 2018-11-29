@@ -1,6 +1,6 @@
 #include "Toy.h"
 
-Toy::Toy(Ogre::SceneNode* sceneNode, std::string mesh) {
+Toy::Toy(Ogre::SceneNode* sceneNode, std::string mesh, std::string material) {
 	//creacion de entidades
 	//Accedemos al creador del nodo recibido, que sera mSM, y le decimos que use la malla de esfera
 	cabeza = sceneNode->getCreator()->createEntity(mesh);  //si no se encuentra una malla, se busca en media/models
@@ -29,6 +29,10 @@ Toy::Toy(Ogre::SceneNode* sceneNode, std::string mesh) {
 	mCuerpo->setScale(0.6, 0.6, 0.6);
 	mOmbligo->setPosition(100, 0, 0);
 	mOmbligo->setScale(0.175, 0.175, 0.175);
+
+	// materials
+	cabeza->setMaterialName(material);
+	cuerpo->setMaterialName(material);
 }
 
 bool Toy::keyPressed(const OgreBites::KeyboardEvent& evt) {

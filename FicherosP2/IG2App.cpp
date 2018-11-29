@@ -5,6 +5,8 @@
 #include <SDL_keycode.h>
 #include <OgreMeshManager.h>
 
+#include <OgreCompositorManager.h>
+
 using namespace Ogre;
 
 bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
@@ -132,11 +134,14 @@ void IG2App::setupScene(void)
    //---------------------------------FONDO----------------------------------
 
   mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -20), "mandelbrot1", 1, 1, true, 1.0, 100, 100);
+  
+  CompositorManager::getSingleton().addCompositor(vp, "Luminance");
+  CompositorManager::getSingleton().addCompositor(vp, "Luminance", true);
 
   //---------------------------------TOY------------------------------------
 
   mToy = mPlano->createChildSceneNode("nToy");                      // hacemos que el nodo mToy sea hijo del nodo mPlano
-  toy = new Toy(mToy, "sphere.mesh");                               // inicializamos la entidad toy, a la que apuntara mToy
+  toy = new Toy(mToy, "uv_sphere.mesh", "Holes");                               // inicializamos la entidad toy, a la que apuntara mToy
   addInputListener(toy);                                            // añadimos toy a la lista de oyentes para poder recibir eventos de teclado
 
   //-------------------------------SINBAD-----------------------------------
