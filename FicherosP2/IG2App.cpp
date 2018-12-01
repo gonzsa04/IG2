@@ -128,20 +128,20 @@ void IG2App::setupScene(void)
   //---------------------------------PLANO----------------------------------
 
   mPlano = mSM->getRootSceneNode()->createChildSceneNode("nPlano"); // hacemos que el nodo mPlano sea hijo del nodo raiz
-  plano = new Plano(mPlano, "Plano");                       // creamos el plano, que por debajo se adjuntara al nodo mPlano
+  plano = new Plano(mPlano, "Plano");                               // creamos el plano, que por debajo se adjuntara al nodo mPlano
   plano->setReflex(camRef);
 
    //---------------------------------FONDO----------------------------------
 
   mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -20), "mandelbrot1", 1, 1, true, 1.0, 100, 100);
   
-  CompositorManager::getSingleton().addCompositor(vp, "Luminance");
+  CompositorManager::getSingleton().addCompositor(vp, "Luminance"); // composicion de la luz (Luminance.compositor)
   CompositorManager::getSingleton().addCompositor(vp, "Luminance", true);
 
   //---------------------------------TOY------------------------------------
 
   mToy = mPlano->createChildSceneNode("nToy");                      // hacemos que el nodo mToy sea hijo del nodo mPlano
-  toy = new Toy(mToy, "uv_sphere.mesh", "Holes");                               // inicializamos la entidad toy, a la que apuntara mToy
+  toy = new Toy(mToy, "uv_sphere.mesh", "Holes");                   // inicializamos la entidad toy, a la que apuntara mToy, con uv_sphere para que tenga coordenadas de textura
   addInputListener(toy);                                            // añadimos toy a la lista de oyentes para poder recibir eventos de teclado
 
   //-------------------------------SINBAD-----------------------------------

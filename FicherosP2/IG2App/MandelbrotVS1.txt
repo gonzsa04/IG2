@@ -1,8 +1,11 @@
 #version 330 core
+
 in vec4 vertex; // atributos de los vértices a procesar
 in vec2 uv0;
+
 uniform mat4 modelViewProjMat; // matriz de transformación
 uniform float time;
+
 out vec2 vUv0;
 
 void main() {

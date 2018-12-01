@@ -1,6 +1,9 @@
 #version 330 core
+
 in vec2 vUv0;
+
 uniform sampler2D RTT0; // textura con la escena
+
 out vec4 fragColor;
 
 // weight vector for luminance in sRGB

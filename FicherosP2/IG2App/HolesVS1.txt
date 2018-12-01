@@ -1,13 +1,14 @@
 #version 330 core
-in vec4 vertex;                // atributos de los v�rtices a procesar
+
+in vec4 vertex;                     // atributos de los vertices a procesar
 in vec3 normal;
 in vec2 uv0;
 
+uniform mat4 modelViewProjMat;      // matriz de transformacion
+uniform mat4 normalMat;             // matriz inversa (normales)
+
 out vec2 TexCoords;                 // out del vertex shader
 out vec3 Normal;
-
-uniform mat4 modelViewProjMat; // constantes de programa
-uniform mat4 normalMat;
 
 void main() {
 	Normal=mat3(normalMat)*normal;

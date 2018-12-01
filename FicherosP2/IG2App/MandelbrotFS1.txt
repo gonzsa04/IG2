@@ -1,9 +1,13 @@
 #version 330 core
+
 in vec2 vUv0;
+
 uniform vec4 InColor;
 uniform vec4 OutColor1;
 uniform vec4 OutColor2;
+
 const int MaxIter = 100;
+
 out vec4 fFragColor;
 
 void main(){

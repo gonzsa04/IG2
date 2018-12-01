@@ -1,16 +1,23 @@
 ﻿#version 330 core
-in vec4 vertex;                // atributos de los v�rtices a procesar
-in vec2 uv0;
-uniform mat4 modelViewProjMat; // constantes de programa
-uniform float time;            // los uniform tiene que recibirlos de fuera (.material)
-out vec2 vUv0;                 // out del vertex shader
+
+// vertex shader pide los atributos in a Ogre
+in vec4 vertex;                // atributos de los vertices a procesar
+in vec2 uv0;                   
+
+// los uniform tiene que recibirlos de fuera (.material)
+uniform mat4 modelViewProjMat; // matriz de transformacion
+uniform float time;
+
+// los out se los pasa al fragment shader
+out vec2 vUv0;
 out vec2 vUv1;
 
 void main() {
 	vUv0 = uv0;
 	vUv1 = uv0;
 
-	vUv1.s = ((vUv0.s - 0.5)*time)+0.5; // zoom
+    // zoom
+	vUv1.s = ((vUv0.s - 0.5)*time)+0.5;
 	vUv1.t = ((vUv0.t - 0.5)*time)+0.5;
 	
 	gl_Position = modelViewProjMat * vertex; // obligatorio

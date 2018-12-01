@@ -160,7 +160,7 @@ material Holes
     {
         pass
         {
-            cull_hardware none
+            cull_hardware none  // para indicar que se rendericen ambas caras
             cull_software none
             vertex_program_ref HolesVS1
             { // params ‐> default_params
@@ -201,7 +201,7 @@ material LuminancePS{
             { // params ‐> default_params
             }
             texture_unit RTT0{
-                //sin imagen de archivo -> previous render target
+                //sin imagen de archivo -> usa el previous render target
                 filtering none // tiene la resolucion del viewport
             }
         }

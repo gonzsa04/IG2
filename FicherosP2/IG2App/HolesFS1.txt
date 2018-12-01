@@ -1,29 +1,30 @@
 #version 330 core
-uniform sampler2D texture1; // tipo sampler2D para texturas 
-uniform vec3 color_front;
-uniform vec3 color_back;
-uniform vec4 lightPos;
-uniform vec4 intLuz;     // intensidad de luz, ahora no la vamos a usar
 
-in vec2 TexCoords;               // out del vertex shader
+in vec2 TexCoords;          // out del vertex shader
 in vec3 Normal;
+
+uniform sampler2D texture1; // tipo sampler2D para texturas 
+uniform vec3 color_front;   // color del que se pintara la parte de fuera
+uniform vec3 color_back;    // color del que se pintara la parte de dentro
+uniform vec4 lightPos;      // direccion de la luz (considerada como vector)
+uniform vec4 intLuz;        // intensidad de luz
 
 out vec4 fFragColor;        // out del fragment shader
 
 void main() {
 	vec3 color = vec3(texture(texture1, TexCoords));
 
-    if(color.x > 0.55) discard;
+    if(color.x > 0.55) discard;         // si el texel cumple esta caracteristica, salimos y no se pinta (como un return)
 
-    if(gl_FrontFacing){
+    if(gl_FrontFacing){                 // si el texel corresponde a la parte de fuera lo pintamos del color correspondiente
         vec3 norm = normalize(Normal);
         vec3 lightDir = normalize(vec3(lightPos));
         float diff = max(dot(norm, lightDir), 0.0);
         vec3 diffuse = vec3(intLuz) * diff;
         fFragColor = vec4(color_front * diffuse, 1.0);
     }
-    else {
-        vec3 norm = -normalize(Normal);
+    else {                              // si el texel pertenece a la parte de dentro lo pintamos del otro color
+        vec3 norm = -normalize(Normal); // invertimos las normales, ya que deberan ir hacia dentro
         vec3 lightDir = normalize(vec3(lightPos));
         float diff = max(dot(norm, lightDir), 0.0);
         vec3 diffuse = vec3(intLuz) * diff;
