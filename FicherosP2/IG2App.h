@@ -47,7 +47,14 @@ protected:
   Plano* plano = nullptr;
   Bomb* bomba = nullptr;
 
+  Viewport* vp = nullptr;
   bool cameraSigue = false;
+
+  bool interference = false;        // si hay interferencia o no
+  bool interferenceEnable = false;  // si la interferencia esta enabled
+
+  float timeSinceLastFrame = 0;
+  const float timeToNextInterference = 0.2;
 };
 
 #endif

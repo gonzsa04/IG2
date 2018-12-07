@@ -31,5 +31,4 @@ void main() {
         fFragColor = vec4(color_front * diffuse, 1.0);
         fFragColor = vec4(color_back * diffuse, 1.0);
     }
-
 }

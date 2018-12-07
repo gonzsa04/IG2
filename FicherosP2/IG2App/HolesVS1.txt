@@ -11,8 +11,7 @@ out vec2 TexCoords;                 // out del vertex shader
 out vec3 Normal;
 
 void main() {
-	Normal=mat3(normalMat)*normal;
+	Normal = mat3(normalMat)*normal;
     TexCoords = uv0;
-
 	gl_Position = modelViewProjMat * vertex; // obligatorio
 }

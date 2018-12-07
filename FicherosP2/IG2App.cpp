@@ -24,6 +24,18 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 	  else mCamMgr->setTarget(mSM->getRootSceneNode());
 	  cameraSigue = !cameraSigue;
   }
+  else if (evt.keysym.sym == SDLK_i)   // si se pulsa i, la interferencia comienza a parpadear o se quita si ya estaba puesta
+  {
+	  interference = !interference;
+	  if (!interference) {             // si la interferencia se quita, inicializamos los valores 
+		  CompositorManager::getSingleton().setCompositorEnabled(vp, "Interference", false);
+		  interferenceEnable = false;
+		  timeSinceLastFrame = 0;
+	  }
+	  else {                           // si no, la ponemos
+		  CompositorManager::getSingleton().setCompositorEnabled(vp, "Interference", true);
+	  }
+  }
   
   return true;
 }
@@ -33,6 +45,15 @@ void IG2App::frameRendered(const Ogre::FrameEvent & evt) {
 		Sphere bombaCollision = bomba->getEntity()->getWorldBoundingSphere();
 		Sphere toyCollision = toy->getEntity()->getWorldBoundingSphere();
 		if (bombaCollision.intersects(toyCollision)) GameObject::fireAppEvent(COLISION, toy); // en tal caso lanzamos un evento
+	}
+
+	if (interference) { // si hay interferencias, se activan y desactivan cada timeToNextInterference segundos
+		timeSinceLastFrame += evt.timeSinceLastFrame;
+		if (timeSinceLastFrame >= timeToNextInterference) {
+			CompositorManager::getSingleton().setCompositorEnabled(vp, "Interference", interferenceEnable);
+			interferenceEnable = !interferenceEnable;
+			timeSinceLastFrame = 0;
+		}
 	}
 }
 
@@ -91,7 +112,7 @@ void IG2App::setupScene(void)
   //mCamNode->setDirection(Ogre::Vector3(0, 0, -1));  
 
   // and tell it to render into the main window
-  Viewport* vp = getRenderWindow()->addViewport(cam);
+  vp = getRenderWindow()->addViewport(cam);
   //vp->setBackgroundColour(Ogre::ColourValue(1, 1, 1));
   
   //----------------------------------CAMARAREF--------------------------------
@@ -135,8 +156,7 @@ void IG2App::setupScene(void)
 
   mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -20), "mandelbrot1", 1, 1, true, 1.0, 100, 100);
   
-  CompositorManager::getSingleton().addCompositor(vp, "Luminance"); // composicion de la luz (Luminance.compositor)
-  CompositorManager::getSingleton().addCompositor(vp, "Luminance", true);
+  CompositorManager::getSingleton().addCompositor(vp, "Interference"); // añadimos composicion (efecto de postprocesado)
 
   //---------------------------------TOY------------------------------------
 

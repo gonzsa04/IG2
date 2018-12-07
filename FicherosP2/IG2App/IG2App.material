@@ -207,3 +207,36 @@ material LuminancePS{
         }
     }
 }
+
+vertex_program InterferenceVS glsl{
+    source InterferenceVS.txt
+    default_params{
+         param_named_auto modelViewProjMat worldviewproj_matrix
+    }
+}
+
+fragment_program InterferenceFS glsl{
+    source InterferenceFS.txt
+    default_params{
+        param_named RTT0 int 0 // textura con la escena
+    }
+}
+
+material InterferencePS{  // igual que el material LuminancePS,
+    technique{            // solo que la escala de grises se aplicara unas lineas si, otras no
+        pass{             // unica diferencia en InterferenceFS.txt (lineas 15-19)
+            depth_check off  // desactivar el depth-buffer
+            depth_write off
+            vertex_program_ref InterferenceVS
+            { // params ‐> default_params
+            }
+            fragment_program_ref InterferenceFS
+            { // params ‐> default_params
+            }
+            texture_unit RTT0{
+                //sin imagen de archivo -> usa el previous render target
+                filtering none // tiene la resolucion del viewport
+            }
+        }
+    }
+}
